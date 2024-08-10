@@ -23,10 +23,15 @@ Kho lưu trữ này chứa một script DDoS (Distributed Denial of Service) vi�
 2. **Chạy script cài đặt**
 
    Chạy script cài đặt để tự động cài đặt tất cả các thư viện cần thiết và cấu hình công cụ:
-
+Linux, Android, IOS
    ```bash
    bash setup.sh
    ```
+windows
+   ```bash
+    setup.bat 
+   ```
+   
 
 3. **Chạy script DDoS**
 
