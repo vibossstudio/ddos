@@ -1,29 +1,32 @@
 @echo off
+setlocal
+
 echo Đang cài đặt các gói, vui lòng đợi...
 
 :: Kiểm tra và cài đặt pip
-python -m pip --version >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
+where python >nul 2>nul
+if %errorlevel% neq 0 (
+    echo Python chưa được cài đặt. Vui lòng cài đặt Python trước khi tiếp tục.
+    exit /b 1
+)
+
+python -m pip --version >nul 2>nul
+if %errorlevel% neq 0 (
     echo pip chưa được cài đặt. Đang cài đặt pip...
     python -m ensurepip
 )
 
-:: Cài đặt các thư viện colorama, scapy, và requests
+:: Cài đặt các thư viện cần thiết
 pip install colorama scapy requests
 
-:: Hỏi người dùng có muốn chạy DDoS từ bất kỳ đâu trên hệ thống hay không
-set /p usr="Bạn có muốn chạy DDoS từ bất kỳ đâu trên hệ thống của bạn không? [y/n]: "
+:: Tạo tệp thực thi cho Windows
+echo Đang tạo tệp thực thi cho ddos.py...
+echo @echo off > ddos.bat
+echo python ddos.py %%* >> ddos.bat
 
-:: Nếu người dùng chọn 'y'
-if "%usr%"=="y" (
-    :: Kiểm tra đường dẫn của Python và tạo liên kết
-    set "python_path=%PYTHON_HOME%"
-    if "%python_path%"=="" (
-        set "python_path=%~dp0"
-    )
-    echo @echo off > ddos.bat
-    echo "%python_path%\python.exe" "%~dp0\ddos.py" %%* >> ddos.bat
-    echo Cài đặt thành công. Bạn có thể chạy script bằng lệnh 'ddos.bat'.
-) else (
-    echo Không tạo liên kết. Bạn có thể chạy script bằng cách sử dụng 'python ddos.py'.
-)
+echo Cài đặt hoàn tất. Bạn có thể chạy script bằng cách sử dụng file 'ddos.bat'.
+
+:: Chạy ddos.py
+python ddos.py
+
+endlocal
