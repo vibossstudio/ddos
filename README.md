@@ -1,64 +1,48 @@
-# DDoS
+# DDoS Attack Simulation Tool
 
-**Author:** __ViBoss__  
-**GitHub:** [ViBoss](https://github.com/dhungx)
+Đây là công cụ mô phỏng tấn công DDoS (Distributed Denial of Service) được tạo ra cho mục đích giáo dục. Công cụ này giúp người dùng hiểu rõ hơn về cách thức hoạt động của một cuộc tấn công DDoS cơ bản. **Không được sử dụng công cụ này cho bất kỳ hoạt động phi pháp nào.**
 
-## Giới thiệu
+## Tính năng
 
-Dự án này cung cấp một công cụ để thực hiện các cuộc tấn công từ chối dịch vụ (DoS) bằng cách gửi yêu cầu HTTP đến một máy chủ mục tiêu với các thông số ngẫu nhiên, bao gồm các tiêu đề HTTP giả. Công cụ này cho phép bạn kiểm tra tính ổn định của máy chủ khi phải xử lý một lượng lớn yêu cầu.
+- Tấn công DDoS một URL hoặc địa chỉ IP cụ thể.
+- Cấu hình số luồng tấn công và cổng.
+- Tô màu văn bản trên terminal sử dụng thư viện `colorama`.
 
-**Lưu ý:** Công cụ này chỉ nên được sử dụng cho mục đích học tập và kiểm tra. Việc sử dụng công cụ này để tấn công các máy chủ không có sự cho phép là bất hợp pháp và có thể dẫn đến hậu quả pháp lý nghiêm trọng.
+## Yêu cầu
 
-## Cài đặt
+- Python 3.x
+- Thư viện `colorama`
 
-Để sử dụng công cụ này, bạn cần có Python 3.6 hoặc cao hơn được cài đặt trên hệ thống của mình. Bạn có thể tải Python từ [trang chính thức](https://www.python.org/).
+## Hướng dẫn cài đặt
 
-## Cách sử dụng
+Bạn có thể dễ dàng cài đặt và thiết lập công cụ này bằng cách sử dụng tệp `setup.sh` đi kèm:
 
-1. **Clone Repository:**
+### 1. Clone Repository
 
-   ```bash
-   git clone https://github.com/dhungx/ddos.git
-   cd ddos
-   ```
+Đầu tiên, bạn cần clone repository này về máy của mình:
 
-2. **Chạy Công Cụ:**
+```bash
+git clone https://github.com/dhungx/ddos.git
+cd ddos
+bash setup.sh
 
-   ```bash
-   python ddos.py or python3 ddos.py
-   ```
 
-3. **Nhập thông tin yêu cầu:**
+Script này sẽ tự động cài đặt tất cả các gói cần thiết để chạy công cụ.
 
-   Sau khi chạy công cụ, bạn sẽ được yêu cầu nhập các thông số sau:
-   
-   - **Target URL:** URL của máy chủ mục tiêu.
-   - **Port:** Cổng mà máy chủ mục tiêu đang lắng nghe.
-   - **Packet/s:** Số lượng gói tin muốn gửi mỗi giây.
-   - **Threads:** Số lượng luồng (threads) để chạy đồng thời.
+2. Chạy Công Cụ
 
-## Ví dụ
+Sau khi cài đặt xong, bạn có thể chạy công cụ bằng lệnh:
 
-Khi được yêu cầu nhập thông tin, bạn có thể nhập như sau:
+python3 ddos.py hoặc python ddos.py
 
-```
-[+] Target URL: http://example.com
-[+] Port: 80
-[+] Packet/s: 100
-[+] Threads: 10
-```
+Hướng dẫn sử dụng
 
-## Các tùy chọn
+	1.	Khởi động công cụ: Sau khi chạy, bạn sẽ thấy một menu hiển thị các tùy chọn. Chọn 1 để bắt đầu mô phỏng một cuộc tấn công DDoS.
+	2.	Nhập thông tin mục tiêu: Nhập URL hoặc địa chỉ IP của mục tiêu, số luồng và cổng muốn tấn công.
+	3.	Bắt đầu tấn công: Công cụ sẽ bắt đầu gửi các gói tin đến mục tiêu và hiển thị số lượng gói tin đã được gửi.
 
-- **fake_ip()**: Hàm này tạo một địa chỉ IP giả ngẫu nhiên. Tuy nhiên, trong mã hiện tại, các kết nối vẫn được thực hiện với IP thật của máy chủ mục tiêu.
+Cảnh báo pháp lý
 
-## Phát triển
+Cảnh báo: Công cụ này chỉ được sử dụng cho mục đích giáo dục và học tập. Tác giả không chịu trách nhiệm đối với bất kỳ thiệt hại nào phát sinh từ việc sử dụng công cụ này cho các mục đích phi pháp. Tấn công DDoS vào các hệ thống mà không có sự cho phép là hành vi vi phạm pháp luật và có thể dẫn đến các hình phạt nghiêm khắc.
 
-Nếu bạn muốn đóng góp vào dự án hoặc báo cáo lỗi, vui lòng gửi yêu cầu kéo (pull request) hoặc mở vấn đề (issue) trên GitHub.
-
-## Cảnh báo
-
-- Việc sử dụng công cụ này để tấn công các máy chủ hoặc dịch vụ mà bạn không có quyền kiểm tra là vi phạm pháp luật. Hãy đảm bảo bạn có sự cho phép của người sở hữu máy chủ trước khi thực hiện bất kỳ hoạt động nào.
-
-- Tôi không chịu trách nhiệm cho bất cứ thứ gì bạn gây ra 
-
+- Tôi sẽ không chịu trắc nhiệm cho bất cứ thứ gì bạn làm
