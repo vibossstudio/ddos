@@ -33,8 +33,9 @@ Script này sẽ tự động cài đặt tất cả các gói cần thiết đ�
 2. Chạy Công Cụ
 
 Sau khi cài đặt xong, bạn có thể chạy công cụ bằng lệnh:
-
+```bash
 python3 ddos.py hoặc python ddos.py
+```
 
 Hướng dẫn sử dụng
 
