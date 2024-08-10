@@ -1,50 +1,52 @@
-# DDoS Attack Simulation Tool
+Dưới đây là tệp `README.md` bằng tiếng Việt cho dự án DDoS của bạn:
 
-Đây là công cụ mô phỏng tấn công DDoS (Distributed Denial of Service) được tạo ra cho mục đích giáo dục. Công cụ này giúp người dùng hiểu rõ hơn về cách thức hoạt động của một cuộc tấn công DDoS cơ bản. **Không được sử dụng công cụ này cho bất kỳ hoạt động phi pháp nào.**
+```markdown
+# Script DDoS
+
+Kho lưu trữ này chứa một script DDoS (Distributed Denial of Service) được viết bằng Python. **Lưu ý: Công cụ này chỉ dành cho mục đích giáo dục. Nhà phát triển không chịu trách nhiệm cho bất kỳ hành động lạm dụng nào của công cụ này.**
 
 ## Tính năng
 
-- Tấn công DDoS một URL hoặc địa chỉ IP cụ thể.
-- Cấu hình số luồng tấn công và cổng.
-- Tô màu văn bản trên terminal sử dụng thư viện `colorama`.
-
-## Yêu cầu
-
-- Python 3.x
-- Thư viện `colorama`
+- Tấn công DDoS đa luồng.
+- Tùy chỉnh URL và cổng mục tiêu.
+- Tùy chọn sử dụng địa chỉ IP giả.
+- Tương thích với nhiều môi trường: Termux, iSH, Linux.
+- Script cài đặt (`setup.sh`) để dễ dàng cài đặt các thư viện cần thiết.
 
 ## Hướng dẫn cài đặt
 
-Bạn có thể dễ dàng cài đặt và thiết lập công cụ này bằng cách sử dụng tệp `setup.sh` đi kèm:
+1. **Clone kho lưu trữ**
 
-### 1. Clone Repository
+   ```bash
+   git clone https://github.com/dhungx/ddos.git
+   cd ddos
+   ```
 
-Đầu tiên, bạn cần clone repository này về máy của mình:
+2. **Chạy script cài đặt**
 
-```bash
-git clone https://github.com/dhungx/ddos.git
-cd ddos
-bash setup.sh
-```
+   Chạy `setup.sh` để cài đặt tất cả các thư viện cần thiết và cấu hình script để có thể chạy từ bất kỳ đâu trên hệ thống.
 
+   ```bash
+   chmod +x setup.sh
+   ./setup.sh
+   ```
 
-Script này sẽ tự động cài đặt tất cả các gói cần thiết để chạy công cụ.
+3. **Chạy script DDoS**
 
-2. Chạy Công Cụ
+   Sau khi cài đặt xong, bạn có thể chạy script bằng cách gõ lệnh:
 
-Sau khi cài đặt xong, bạn có thể chạy công cụ bằng lệnh:
-```bash
-python3 ddos.py hoặc python ddos.py
-```
+   ```bash
+   ddos
+   ```
 
-Hướng dẫn sử dụng
+   Hoặc nếu bạn chọn không di chuyển script vào thư mục hệ thống:
 
-	1.	Khởi động công cụ: Sau khi chạy, bạn sẽ thấy một menu hiển thị các tùy chọn. Chọn 1 để bắt đầu mô phỏng một cuộc tấn công DDoS.
-	2.	Nhập thông tin mục tiêu: Nhập URL hoặc địa chỉ IP của mục tiêu, số luồng và cổng muốn tấn công.
-	3.	Bắt đầu tấn công: Công cụ sẽ bắt đầu gửi các gói tin đến mục tiêu và hiển thị số lượng gói tin đã được gửi.
+   ```bash
+   python3 ddos.py
+   ```
 
-Cảnh báo pháp lý
+## Lưu ý
 
-Cảnh báo: Công cụ này chỉ được sử dụng cho mục đích giáo dục và học tập. Tác giả không chịu trách nhiệm đối với bất kỳ thiệt hại nào phát sinh từ việc sử dụng công cụ này cho các mục đích phi pháp. Tấn công DDoS vào các hệ thống mà không có sự cho phép là hành vi vi phạm pháp luật và có thể dẫn đến các hình phạt nghiêm khắc.
-
-- Hãy suy nghĩ thật cẩn thận trước khi sử dụng, vì nó có thể là PHẠM PHÁP
+- Script này yêu cầu Python 3 và pip.
+- **Chỉ sử dụng script này cho mục đích giáo dục và kiểm thử.** Không sử dụng nó để tấn công bất kỳ hệ thống nào mà bạn không có quyền.
+- Hãy cẩn trọng khi sử dụng vì có thể PHẠM PHÁP
