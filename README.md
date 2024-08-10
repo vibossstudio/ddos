@@ -46,4 +46,4 @@ Cảnh báo pháp lý
 
 Cảnh báo: Công cụ này chỉ được sử dụng cho mục đích giáo dục và học tập. Tác giả không chịu trách nhiệm đối với bất kỳ thiệt hại nào phát sinh từ việc sử dụng công cụ này cho các mục đích phi pháp. Tấn công DDoS vào các hệ thống mà không có sự cho phép là hành vi vi phạm pháp luật và có thể dẫn đến các hình phạt nghiêm khắc.
 
-- Tôi sẽ không chịu trắc nhiệm cho bất cứ thứ gì bạn làm
+- Hãy suy nghĩ thật cẩn thận trước khi sử dụng, vì nó có thể là PHẠM PHÁP
