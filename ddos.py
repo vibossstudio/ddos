@@ -18,7 +18,7 @@ Github: https://github.com/dhungx
 
 Đừng tấn công web của chính phủ
 \033[0m"  # Reset màu
-)
+""")
 
 useragents = [
     "Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
