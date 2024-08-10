@@ -4,10 +4,14 @@ import socket
 import threading
 import time
 from colorama import Fore, Style
+from urllib.parse import urlparse
 
 def get_ip_from_url(url):
     try:
-        ip_address = socket.gethostbyname(url)
+        # Xử lý URL để loại bỏ giao thức (http, https)
+        parsed_url = urlparse(url)
+        hostname = parsed_url.netloc if parsed_url.netloc else parsed_url.path
+        ip_address = socket.gethostbyname(hostname)
         return ip_address
     except socket.gaierror:
         print("Invalid URL or unable to resolve IP address. Please try again.")
