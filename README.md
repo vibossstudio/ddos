@@ -25,6 +25,7 @@ Bạn có thể dễ dàng cài đặt và thiết lập công cụ này bằng 
 git clone https://github.com/dhungx/ddos.git
 cd ddos
 bash setup.sh
+```
 
 
 Script này sẽ tự động cài đặt tất cả các gói cần thiết để chạy công cụ.
