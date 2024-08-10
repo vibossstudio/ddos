@@ -33,8 +33,8 @@ install_pip() {
 
 install_pip
 
-# Cài đặt thư viện colorama
-pip3 install colorama
+# Cài đặt thư viện colorama và scapy
+pip3 install colorama scapy
 
 # Hỏi người dùng có muốn chạy DDoS từ bất kỳ đâu trên hệ thống hay không
 echo "Bạn có muốn chạy DDoS từ bất kỳ đâu trên hệ thống của bạn không? [y/n]: "
