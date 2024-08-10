@@ -19,7 +19,7 @@ Dự án này cung cấp một công cụ để thực hiện các cuộc tấn 
 
    ```bash
    git clone https://github.com/dhungx/ddos.git
-   cd ddos.py
+   cd ddos
    ```
 
 2. **Chạy Công Cụ:**
