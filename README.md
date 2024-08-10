@@ -62,8 +62,7 @@ Dự án này được cấp phép theo [Giấy phép MIT](https://opensource.or
 
 ## Cảnh báo
 
-Việc sử dụng công cụ này để tấn công các máy chủ hoặc dịch vụ mà bạn không có quyền kiểm tra là vi phạm pháp luật. Hãy đảm bảo bạn có sự cho phép của người sở hữu máy chủ trước khi thực hiện bất kỳ hoạt động nào.
+- Việc sử dụng công cụ này để tấn công các máy chủ hoặc dịch vụ mà bạn không có quyền kiểm tra là vi phạm pháp luật. Hãy đảm bảo bạn có sự cho phép của người sở hữu máy chủ trước khi thực hiện bất kỳ hoạt động nào.
 
-```
+- Tôi không chịu trách nhiệm cho bất cứ thứ gì bạn gây ra 
 
-Bạn có thể điều chỉnh nội dung này tùy thuộc vào các yêu cầu cụ thể của dự án và thông tin mà bạn muốn cung cấp.
