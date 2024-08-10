@@ -17,7 +17,7 @@ Author: __ViBoss__
 Github: https://github.com/dhungx
 
 Đừng tấn công web của chính phủ
-\033[0m"  # Reset màu
+\033[0m
 """)
 
 useragents = [
