@@ -1,4 +1,3 @@
-```markdown
 # DDoS
 
 **Author:** __ViBoss__  
