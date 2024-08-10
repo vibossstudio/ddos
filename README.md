@@ -56,10 +56,6 @@ Khi được yêu cầu nhập thông tin, bạn có thể nhập như sau:
 
 Nếu bạn muốn đóng góp vào dự án hoặc báo cáo lỗi, vui lòng gửi yêu cầu kéo (pull request) hoặc mở vấn đề (issue) trên GitHub.
 
-## Giấy phép
-
-Dự án này được cấp phép theo [Giấy phép MIT](https://opensource.org/licenses/MIT).
-
 ## Cảnh báo
 
 - Việc sử dụng công cụ này để tấn công các máy chủ hoặc dịch vụ mà bạn không có quyền kiểm tra là vi phạm pháp luật. Hãy đảm bảo bạn có sự cho phép của người sở hữu máy chủ trước khi thực hiện bất kỳ hoạt động nào.
