@@ -34,9 +34,9 @@ install_pip() {
 install_pip
 
 # Cài đặt thư viện colorama và scapy
-pip3 install colorama scapy
+pip3 install colorama scapy requests
 
-# Hỏi người dùng có muốn chạy DDoS từ bất kỳ đâu trên hệ thống hay không
+# Hỏi người dùng có muốn chạy DDoS từ bất kỳ đâu trên hệ thống của bạn không
 echo "Bạn có muốn chạy DDoS từ bất kỳ đâu trên hệ thống của bạn không? [y/n]: "
 read usr
 
