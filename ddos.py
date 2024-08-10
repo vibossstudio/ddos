@@ -40,11 +40,11 @@ def ddos_with_spoofing():
         else:
             break
 
-    print(f"Đang thực hiện Ddos với IP giả {fake_ip} trên {target_url} (Cổng: {target_port})")
+    print(f"Đang thực hiện DDoS với IP giả {fake_ip} trên {target_url} (Cổng: {target_port})")
     print(Fore.YELLOW + Style.BRIGHT + "[THÔNG TIN!]" + Fore.WHITE + " Nếu thông tin trên không chính xác, bạn có thể khởi động lại script và nhập lại chi tiết đúng!!")
 
     time.sleep(4)
-    print(Fore.MAGENTA + Style.BRIGHT + "Ddos bắt đầu trong ~")
+    print(Fore.MAGENTA + Style.BRIGHT + "DDoS bắt đầu trong ~")
     print("giây: 3")
     time.sleep(1)
     print("giây: 2")
@@ -89,13 +89,13 @@ def print_red_centered_art():
     ''' 
     red_art2 = f"{Fore.RED}{art2}{Style.RESET_ALL}"
     print(red_art2.center(80))
-    print(Fore.YELLOW + Style.BRIGHT + "[Nhà phát triển không chịu trách nhiệm cho bất kỳ hoạt động bất hợp pháp nào được thực hiện với công cụ này, công cụ này chỉ đại diện cho cách thức hoạt động của các cuộc tấn công ddos và nó được tạo ra cho mục đích giáo dục.]")
+    print(Fore.YELLOW + Style.BRIGHT + "[Nhà phát triển không chịu trách nhiệm cho bất kỳ hoạt động bất hợp pháp nào được thực hiện với công cụ này, công cụ này chỉ đại diện cho cách thức hoạt động của các cuộc tấn công DDoS và nó được tạo ra cho mục đích giáo dục.]")
 
 def menu():
     print(Style.BRIGHT + Fore.YELLOW + "[THÔNG TIN!]" + Fore.WHITE + "Nhấn CTRL + C và nhấn enter để thoát!!")
     print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
     print(Fore.WHITE + Style.BRIGHT + "Vui lòng chọn từ các tùy chọn sau...")
-    print(Fore.WHITE + Style.BRIGHT + "1. DDos một trang web.  [1]")
+    print(Fore.WHITE + Style.BRIGHT + "1. DDoS một trang web.  [1]")
     print(Fore.WHITE + Style.BRIGHT + "2. Thoát.               [2]")
     print("Nhập tùy chọn của bạn .. [ví dụ 1,2]") 
     usr = input(Fore.GREEN + Style.BRIGHT + ">>>> ")
