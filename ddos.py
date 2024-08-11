@@ -17,8 +17,11 @@ def print_banner():
     print("██████╔╝╚█████╔╝██████╔╝░░░██║░░░██║░░██║██║░░██║")
     print("╚═════╝░░╚════╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝")
     print("-------------------------------------------------")
-    print("   ----| Iran Attack _ GitHub:@emnatkins |----   ")
+    print("   ----| DDoS Attack _ GitHub:@dhungx    |----   ")
     print("-------------------------------------------------\n\n")
+    
+    print("HÃY CẨN TRỌNG TRƯỚC KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ MỘT ĐIỀU PHẠM PHÁP")
+    print("ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
 
 def http_get_flood(target, packet_size):
     count = 0
