@@ -51,6 +51,3 @@ Sử dụng script này chỉ cho mục đích học thuật và kiểm tra bả
 ## Giấy Phép
 
 Script này được phát hành dưới giấy phép MIT. Xem [LICENSE](LICENSE) để biết thêm chi tiết.
-
-```
-!
