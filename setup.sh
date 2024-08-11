@@ -33,7 +33,7 @@ install_pip() {
 
 install_pip
 
-# Cài đặt thư viện colorama và scapy
+# Cài đặt thư viện colorama, scapy và requests
 pip3 install colorama scapy requests
 
 # Hỏi người dùng có muốn chạy DDoS từ bất kỳ đâu trên hệ thống của bạn không
@@ -44,8 +44,13 @@ read usr
 echo "Bạn đang sử dụng Termux, iSH Shell, hay Linux? [termux/ish/linux]: "
 read usr_env
 
+python=$(command -v python3)
+if [ -z "$python" ]; then
+    echo "Không tìm thấy Python3. Vui lòng cài đặt Python3 và thử lại."
+    exit 1
+fi
+
 if [ "$usr_env" = "termux" ] && [ "$usr" = "y" ]; then
-    python=$(command -v python3)
     sed -i "1i \#!$python" ddos.py
     chmod +x ddos.py
     mv ddos.py ddos
@@ -53,7 +58,6 @@ if [ "$usr_env" = "termux" ] && [ "$usr" = "y" ]; then
     echo "Cài đặt thành công. Bạn có thể chạy script bằng lệnh 'ddos'."
 
 elif [ "$usr_env" = "ish" ] && [ "$usr" = "y" ]; then
-    python=$(command -v python3)
     sed -i "1i \#!$python" ddos.py
     chmod +x ddos.py
     mv ddos.py ddos
@@ -61,7 +65,6 @@ elif [ "$usr_env" = "ish" ] && [ "$usr" = "y" ]; then
     echo "Cài đặt thành công. Bạn có thể chạy script bằng lệnh 'ddos'."
 
 elif [ "$usr_env" = "linux" ] && [ "$usr" = "y" ]; then
-    python=$(command -v python3)
     sed -i "1i \#!$python" ddos.py
     chmod +x ddos.py
     mv ddos.py ddos
