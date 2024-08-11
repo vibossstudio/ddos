@@ -1,77 +1,67 @@
-#!/bin/sh
+#!/bin/bash
 
-# Hàm cài đặt thư viện Python
-install_python_libraries() {
-    echo "Cài đặt các thư viện Python cần thiết..."
-    pip3 install scapy rainbowtext requests colorama pyfiglet pyuseragents
-}
+# Kiểm tra hệ điều hành
+OS=$(uname -s)
 
-# Hàm cài đặt cho Linux
-install_linux() {
-    echo "Cài đặt Python3 và pip trên Linux..."
-    sudo apt-get update
-    sudo apt-get install -y python3 python3-pip
-    install_python_libraries
-}
+echo "Hệ điều hành của bạn là: $OS"
 
-# Hàm cài đặt cho Windows (WSL)
-install_windows() {
-    echo "Cài đặt Python3 và pip trên Windows (WSL)..."
-    sudo apt-get update
-    sudo apt-get install -y python3 python3-pip
-    install_python_libraries
-}
+# Cài đặt thư viện cần thiết cho từng hệ điều hành
 
-# Hàm cài đặt cho iSH shell
-install_ish() {
-    echo "Cài đặt Python3 và pip trên iSH shell..."
-    apk update
-    apk add python3 py3-pip
-    install_python_libraries
-}
+if [ "$OS" = "Linux" ]; then
+    echo "Đang cài đặt thư viện cho Linux..."
 
-# Hàm cài đặt cho Termux
-install_termux() {
-    echo "Cài đặt Python3 và pip trên Termux..."
-    pkg update
-    pkg install -y python
-    pip install --upgrade pip
-    install_python_libraries
-}
+    # Cài đặt pip nếu chưa có
+    if ! command -v pip3 &> /dev/null; then
+        echo "pip3 không tìm thấy. Đang cài đặt pip3..."
+        sudo apt update
+        sudo apt install -y python3-pip
+    fi
 
-# Xác định hệ điều hành và cài đặt tương ứng
-case "$(uname -s)" in
-    Linux)
-        if [ -x "$(command -v apk)" ]; then
-            # iSH shell (Alpine Linux)
-            install_ish
-        else
-            # Linux
-            install_linux
-        fi
-        ;;
-    MINGW* | MSYS* | MSL*)
-        # Windows (WSL)
-        install_windows
-        ;;
-    *)
-        if [ -x "$(command -v apk)" ]; then
-            # iSH shell (Alpine Linux)
-            install_ish
-        elif [ -x "$(command -v pkg)" ]; then
-            # Termux
-            install_termux
-        else
-            echo "Hệ điều hành không được hỗ trợ."
-            exit 1
-        fi
-        ;;
-esac
+    # Cài đặt các thư viện Python cần thiết
+    pip3 install requests
 
-# Kiểm tra xem tệp ddos.py có tồn tại không
-if [ -f "ddos.py" ]; then
-    echo "Tệp ddos.py đã được tìm thấy. Chạy tệp..."
-    python3 ddos.py
+elif [ "$OS" = "Darwin" ]; then
+    echo "Đang cài đặt thư viện cho macOS..."
+
+    # Cài đặt pip nếu chưa có
+    if ! command -v pip3 &> /dev/null; then
+        echo "pip3 không tìm thấy. Đang cài đặt pip3..."
+        sudo easy_install pip
+    fi
+
+    # Cài đặt các thư viện Python cần thiết
+    pip3 install requests
+
+elif [ "$OS" = "Termux" ]; then
+    echo "Đang cài đặt thư viện cho Termux..."
+
+    # Cài đặt pip nếu chưa có
+    if ! command -v pip &> /dev/null; then
+        echo "pip không tìm thấy. Đang cài đặt pip..."
+        pkg install python
+    fi
+
+    # Cài đặt các thư viện Python cần thiết
+    pip install requests
+
+elif [ "$OS" = "ISH" ]; then
+    echo "Đang cài đặt thư viện cho iSH Shell..."
+
+    # Cài đặt pip nếu chưa có
+    if ! command -v pip &> /dev/null; then
+        echo "pip không tìm thấy. Đang cài đặt pip..."
+        apk update
+        apk add py3-pip
+    fi
+
+    # Cài đặt các thư viện Python cần thiết
+    pip install requests
+
 else
-    echo "Tệp ddos.py không tồn tại. Vui lòng kiểm tra lại."
+    echo "Hệ điều hành không được hỗ trợ!"
+    exit 1
 fi
+
+# Chạy file ddos.py bằng Python 3
+echo "Đang chạy ddos.py bằng Python 3..."
+python3 ddos.py
