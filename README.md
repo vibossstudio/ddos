@@ -1,6 +1,3 @@
-Dưới đây là file `README.md` cập nhật với liên kết GitHub mới của bạn:
-
-```markdown
 # DDoS Attack Script
 
 ## Mô tả
