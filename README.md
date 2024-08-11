@@ -1,68 +1,63 @@
-# Script DDoS
+# Fox DDOSER
 
-Kho lưu trữ này chứa một script DDoS (Distributed Denial of Service) viết bằng Python. **Lưu ý: Công cụ này chỉ dành cho mục đích giáo dục. Nhà phát triển không chịu trách nhiệm cho bất kỳ hành động lạm dụng nào của công cụ này.**
+Fox DDOSER là một công cụ tấn công từ chối dịch vụ (DDoS) đa năng. Công cụ này hỗ trợ nhiều phương pháp tấn công khác nhau, bao gồm cả các cuộc tấn công Layer 4 và Layer 7.
 
-## Tính năng
+## Cài đặt
 
-- Tấn công DDoS đa luồng.
-- Tùy chỉnh URL và cổng mục tiêu.
-- Tùy chọn sử dụng địa chỉ IP giả.
-- Tương thích với các môi trường: Termux, iSH, Windows (WSL).
+### Bước 1: Sao chép mã nguồn
 
-## Hướng dẫn cài đặt
+Sao chép mã nguồn từ GitHub về máy của bạn:
 
-1. **Clone kho lưu trữ**
-
-   Tải về mã nguồn của dự án từ GitHub:
-
-   ```bash
-   git clone https://github.com/dhungx/ddos.git
-   cd ddos
-   ```
-
-2. **Chạy script cài đặt**
-
-   Chạy script cài đặt để tự động cài đặt tất cả các thư viện cần thiết và cấu hình công cụ:
-Linux, Android, IOS
-   ```bash
-   bash setup.sh
-   ```
-windows
-   ```bash
-    setup.bat 
-   ```
-   
-
-3. **Chạy script DDoS**
-
-   Sau khi cài đặt xong, bạn có thể chạy script bằng cách gõ lệnh sau từ bất kỳ đâu trên hệ thống của bạn:
-
-   ```bash
-   ddos
-   ```
-
-   Hoặc nếu bạn chọn không di chuyển script vào thư mục hệ thống:
-
-   ```bash
-   python3 ddos.py
-   ```
-
-## Lưu ý
-
-- **Script này yêu cầu Python 3 và pip.** Nếu bạn chưa cài đặt chúng, hãy cài đặt Python 3 và pip trước khi chạy script.
-- **Chỉ sử dụng script này cho mục đích giáo dục và kiểm thử.** Không sử dụng nó để tấn công bất kỳ hệ thống nào mà bạn không có quyền.
-
-## Đóng góp
-
-Nếu bạn muốn đóng góp cho dự án, bạn có thể fork kho lưu trữ này và gửi pull request với những thay đổi của bạn.
-
-## Liên hệ
-
-Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ qua email hoặc tạo issue trên GitHub.
+```bash
+git clone https://github.com/dhungx/ddos.git
+cd ddos
 ```
 
-### Hướng dẫn sử dụng:
+Bước 2: Cài đặt phụ thuộc
 
-- **Clone repo:** Tải về mã nguồn từ GitHub và điều hướng đến thư mục chứa mã nguồn.
-- **Cài đặt:** Chạy `bash setup.sh` để cài đặt các phụ thuộc và cấu hình.
-- **Chạy:** Sử dụng lệnh `ddos` từ bất kỳ đâu trên hệ thống hoặc chạy trực tiếp bằng Python nếu không di chuyển script.
+Chạy tệp setup.sh để tự động cài đặt tất cả các phụ thuộc cần thiết cho dự án:
+
+bash setup.sh
+
+Bước 3: Chạy ứng dụng
+
+Sau khi cài đặt xong, bạn có thể chạy ứng dụng bằng cách:
+```bash
+python ddos.py
+
+hoặc
+
+python3 ddos.py
+```
+
+Các phương pháp tấn công
+
+Layer 4
+
+	•	Ping of Death
+	•	SYN Flood
+	•	Malformed Packet
+	•	Land Attack
+	•	ARP Spoofing
+	•	Nestea
+	•	UDP Flood
+	•	Teardrop Attack
+	•	TCP Flood
+
+Layer 7
+
+	•	GET Request Flood
+	•	POST Request Flood
+	•	HEAD Request Flood
+	•	PUT Request Flood
+	•	OPTIONS Request Flood
+
+Yêu cầu
+
+	•	Python 3.x
+	•	pip (Trình quản lý gói Python)
+
+Lưu ý
+
+	•	DDoS (Distributed Denial of Service) là một cuộc tấn công phạm pháp. Việc sử dụng công cụ này có thể vi phạm pháp luật hoặc các chính sách của mạng. Đảm bảo rằng bạn chỉ sử dụng công cụ này trong môi trường kiểm tra và với sự cho phép từ các bên liên quan.
+	•	Đừng sử dụng công cụ này để tấn công các hệ thống mà bạn không có quyền kiểm soát. 
