@@ -132,6 +132,10 @@ def menu():
  \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
   \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
    `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
+AuThor: __VIBOSS__
+Github: https://github.com/dhungx/ddos
+ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
+HÃY CẨN THẬN TRƯỚC KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ PHẠM PHÁP
 """ + Style.RESET_ALL)
     print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
     print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
