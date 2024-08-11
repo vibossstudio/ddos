@@ -5,7 +5,6 @@ import requests
 from urllib.parse import urlparse
 from colorama import Fore, Style
 from socket import *
-from struct import pack, htons
 from random import randrange, choice
 import re
 
