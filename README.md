@@ -57,7 +57,7 @@ Yêu cầu
 	•	Python 3.x
 	•	pip (Trình quản lý gói Python)
 
-Lưu ý
-
-	•	DDoS (Distributed Denial of Service) là một cuộc tấn công phạm pháp. Việc sử dụng công cụ này có thể vi phạm pháp luật hoặc các chính sách của mạng. Đảm bảo rằng bạn chỉ sử dụng công cụ này trong môi trường kiểm tra và với sự cho phép từ các bên liên quan.
-	•	Đừng sử dụng công cụ này để tấn công các hệ thống mà bạn không có quyền kiểm soát. 
+# Lưu ý
+- DDoS (Distributed Denial of Service) là một cuộc tấn công phạm pháp. Việc sử dụng công cụ này có thể vi phạm pháp luật hoặc các chính sách của mạng. Đảm bảo rằng bạn chỉ sử dụng công cụ này trong môi trường kiểm tra và với sự cho phép từ các bên liên quan.
+- Đừng sử dụng công cụ này để tấn công các hệ thống mà bạn không có quyền kiểm soát. 
+- Tác giả sẽ không chịu trách nhiệm cho bất kì thứ gì mã bạn gây ra.
