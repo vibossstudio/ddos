@@ -161,10 +161,14 @@ print(rain(banner()))
 print (rain("""
 |==============================|
 |         Black Fox            |
-|       Security Team          |
-|  Author : Maximum Radikali   |
+|       ViBoss Team.           |
+|  Author : ViBoss Studio.     |
 |    DDOSER Layer 4 , Layer 7  |
 |==============================|
+
+ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC).
+
+HÃY CÂN NHẮC VÀ CẨN THẬN KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ ĐIỀU PHẠM PHÁP
 """))
 layer = input(cy + "[-] layer4\n[-] layer7\n\n ~ Select a layer to continue -> ")
 
