@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Cập nhật hệ thống và cài đặt các gói cần thiết
+# Cập nhật hệ thống
 echo "Cập nhật hệ thống..."
 sudo apt-get update
-sudo apt-get upgrade -y
 
+# Cài đặt Python3 và pip
 echo "Cài đặt Python3 và pip..."
 sudo apt-get install -y python3 python3-pip
 
