@@ -36,8 +36,11 @@ class DDoSAttack:
 
     def run(self):
         while True:
+            print("Running ddos_requester...")
             self.ddos_requester()
+            print("Running syn_flood...")
             self.syn_flood()
+            print("Running pyslow...")
             self.pyslow()
             time.sleep(0)  # Wait a bit before restarting
 
@@ -129,11 +132,6 @@ def menu():
  \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
   \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
    `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
-AuThor: __VIBOSS__
-Github: https://github.com/dhungx/ddos
-ĐỪNG TẤN CÔNG TRANG WEB CỦA CHÍNH PHỦ (NHÀ NƯỚC)
-TÁC GIẢ SẼ KHÔNG CHỊU BẤT CỨ TRÁCH NHIỆM GÌ CỦA BẠN GÂY RA
-HÃY CẨN THẬN VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ PHẠP PHÁP
 """ + Style.RESET_ALL)
     print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
     print(Fore.BLUE + Style.BRIGHT + "=====================>>>>>>>>>>>>>>>>")
