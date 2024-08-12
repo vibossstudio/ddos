@@ -41,7 +41,7 @@ def banner():
         HÃY CẨN TRỌNG TRƯỚC KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ MỘT ĐIỀU PHẠM PHÁP
         ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
         ''' + Style.RESET_ALL + Fore.MAGENTA + Style.BRIGHT + '''
-        by: b i y i v i
+        by: V I B O S S   S T U D I O
         ''' + Style.RESET_ALL)
 
 def http_get_flood(target, packet_size):
