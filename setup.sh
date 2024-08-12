@@ -3,16 +3,17 @@
 # Kiểm tra hệ điều hành
 OS=$(uname -s)
 
-# Kiểm tra thêm để xác định iSH Shell và Termux
+# Kiểm tra thêm để xác định iSH Shell
 if [ -f /proc/version ] && grep -q 'iSH' /proc/version; then
     OS="iSH"
-elif [ "$OS" = "Linux" ] && [ -f /data/data/com.termux/files/usr/bin/termux-am ]; then
-    OS="Termux"
-elif [ "$OS" = "Linux" ] && [ -f /system/bin/termux-am ]; then
-    OS="Termux"
+elif [ "$OS" = "Linux" ]; then
+    # Kiểm tra Termux
+    if [ -f /data/data/com.termux/files/usr/bin/termux-am ] || [ -f /system/bin/termux-am ]; then
+        OS="Termux"
+    fi
 fi
 
-echo "Bạn đang dùng: $OS"
+echo "Hệ điều hành của bạn là: $OS"
 
 # Cài đặt thư viện cần thiết cho từng hệ điều hành
 
@@ -66,7 +67,7 @@ elif [ "$OS" = "iSH" ]; then
     # Cài đặt các thư viện Python cần thiết
     pip install requests colorama tqdm
 
-elif [ "$OS" = "MINGW32_NT-10.0" ] || [ "$OS" = "MINGW64_NT-10.0" ] || [ "$OS" = "CYGWIN_NT-10.0" ] || [ "$OS" = "MSYS_NT-10.0" ]; then
+elif [[ "$OS" == MINGW* || "$OS" == MSYS* ]]; then
     echo "Đang cài đặt thư viện cho Windows..."
 
     # Cài đặt pip nếu chưa có
