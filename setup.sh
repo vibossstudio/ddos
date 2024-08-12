@@ -10,6 +10,8 @@ elif [ "$OS" = "Linux" ]; then
     # Kiểm tra Termux
     if [ -f /data/data/com.termux/files/usr/bin/termux-am ] || [ -f /system/bin/termux-am ]; then
         OS="Termux"
+    elif [ -f /etc/ish-release ]; then
+        OS="iSH"
     fi
 fi
 
