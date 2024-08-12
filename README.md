@@ -1,7 +1,5 @@
 # DDoS Attack Script
 
-## Giới thiệu
-
 Đây là một tập lệnh Python đơn giản để thực hiện các cuộc tấn công DDoS (Từ chối dịch vụ phân tán). Tập lệnh này cung cấp hai loại tấn công:
 
 1. **HTTP GET Flood**: Gửi các yêu cầu HTTP GET liên tục tới mục tiêu.
