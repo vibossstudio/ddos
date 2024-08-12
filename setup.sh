@@ -3,8 +3,8 @@
 # Kiểm tra hệ điều hành
 OS=$(uname -s)
 
-# Kiểm tra thêm để xác định iSH Shell
-if [ -f /proc/version ] && grep -q 'iSH' /proc/version; then
+# Kiểm tra thêm để xác định iSH Shell và Termux
+if [ -n "$ISH_SHELL" ]; then
     OS="iSH"
 elif [ "$OS" = "Linux" ]; then
     # Kiểm tra Termux
